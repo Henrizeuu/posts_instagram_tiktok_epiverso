@@ -1,0 +1,28 @@
+REELS 12 · TUTORIAL DO SISTEMA · NARRAÇÃO NOVA
+==============================================
+
+Arquivo: reels_narracao_nova.mp4 (1080 x 1920, 30 fps, 71,5 s, áudio AAC 48 kHz, -16 LUFS)
+Voz: "Amandinha" (ElevenLabs, modelo eleven_v4), feminina, português do Brasil.
+Efeitos sonoros: os mesmos do vídeo original (separados da narração antiga), no tempo exato.
+
+Tempo   Fala
+------  ---------------------------------------------------------------
+00:00   O Painel Fiscal Epiverso, passo a passo.
+00:03   Primeiro, entre com seu usuário e senha.
+00:05   O acesso é protegido contra tentativas de invasão.
+00:08   Na visão geral, você vê seus clientes, os XMLs guardados, se o robô
+        está em dia e quais certificados vão vencer.
+00:15   O gráfico mostra os XMLs de cada mês, e a tabela separa tudo por empresa.
+00:21   No faturamento, o sistema soma as vendas pelo CFOP e compara com o
+        limite do Simples.
+00:27   Ele avisa quem já passou, e em que mês cada cliente deve estourar.
+00:31   Pra cadastrar um cliente, é só colar o CNPJ.
+00:34   O nome vem sozinho, e o painel avisa quando um certificado vai vencer.
+00:38   No explorador, você navega por cliente, fluxo, modelo, ano e mês.
+00:42   E acha qualquer nota em segundos: pelo número, nome, CNPJ ou chave.
+00:48   Com um clique, o DANFE sai em PDF, já com o IBS e a CBS da reforma.
+00:53   Os relatórios trazem cada imposto em PDF e Excel.
+00:57   E o mês inteiro baixa num arquivo ZIP.
+01:00   E o robô trabalha sozinho: busca as notas à meia-noite e ao meio-dia,
+01:04   ou na hora, com um clique.
+01:07   Epiverso! Agende sua demonstração pelo link na bio.
