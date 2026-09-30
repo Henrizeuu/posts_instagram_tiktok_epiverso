@@ -1,0 +1,1547 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epiverso · Painel Fiscal para escritórios contábeis</title>
+<meta name="description" content="O robô da Epiverso busca na SEFAZ as NF-e, NFC-e, CT-e e NFS-e de todos os seus clientes às 00h e às 12h, organiza cada XML e avisa antes de o limite do Simples estourar. Agende uma demonstração.">
+<meta name="theme-color" content="#0a0a0a">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Epiverso">
+<meta property="og:title" content="Epiverso · Todo o fiscal do escritório em uma tela">
+<meta property="og:description" content="Robô que baixa XMLs da SEFAZ às 00h e às 12h, explorador de notas, DANFE com IBS/CBS, relatórios em PDF e Excel e controle do limite do Simples.">
+<meta property="og:image" content="assets/img/og-epiverso.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Cg fill='%23fff'%3E%3Crect x='8' y='9' width='16' height='3.2'/%3E%3Crect x='8' y='14.4' width='16' height='3.2'/%3E%3Crect x='8' y='19.8' width='16' height='3.2'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Painel Fiscal Epiverso","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"Painel fiscal para escritórios contábeis: robô que baixa NF-e, NFC-e, CT-e e NFS-e da SEFAZ às 00h e às 12h, explorador de notas, DANFE com IBS/CBS, relatórios e controle do limite do Simples.","inLanguage":"pt-BR"}
+</script>
+<style>
+:root{
+  --bg:#0a0a0a;--bg-2:#0e0e10;--card:#121214;--card-2:#17171a;
+  --line:rgba(255,255,255,.08);--line-2:rgba(255,255,255,.14);
+  --text:#fafafa;--muted:#a1a1aa;--muted-2:#71717a;
+  --green:#10b981;--green-2:#34d399;--green-3:#059669;--green-soft:rgba(16,185,129,.12);
+  --paper:#fafafa;--white:#fff;--ink:#0a0a0a;--ink-2:#3f3f46;--ink-3:#71717a;--border:#e4e4e7;--border-2:#f4f4f5;
+  --orange:#d97706;--red:#ef4444;--red-2:#f87171;--navy:#0f172a;--blue:#3b82f6;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 10px 30px -12px rgba(0,0,0,.12);
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --wrap:1200px;--gutter:clamp(16px,4vw,32px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:6px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gutter)}
+.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- base de seção ---------- */
+.section{position:relative;padding:clamp(80px,11vw,136px) 0;overflow:hidden}
+.dark{background:var(--bg);color:var(--text)}
+.light{background:var(--paper);color:var(--ink)}
+.grid-bg::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse 75% 65% at 50% 35%,#000 20%,transparent 78%);mask-image:radial-gradient(ellipse 75% 65% at 50% 35%,#000 20%,transparent 78%);pointer-events:none}
+.glow{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(closest-side,rgba(16,185,129,.28),rgba(16,185,129,.08) 55%,transparent);filter:blur(10px)}
+.eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--green);font-weight:500}
+.eyebrow::before{content:"";width:28px;height:1.5px;background:currentColor}
+.light .eyebrow{color:var(--green-3)}
+h1,h2,h3,h4{margin:0;font-weight:800;letter-spacing:-.045em;line-height:1.02}
+.h1{font-size:clamp(42px,6.9vw,88px)}
+.h2{font-size:clamp(34px,5.2vw,62px)}
+.h3{font-size:clamp(21px,2.2vw,27px);letter-spacing:-.03em;line-height:1.15;font-weight:700}
+.g{color:var(--green)}
+.fade{background:linear-gradient(180deg,#e4e4e7 0%,#71717a 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dim{color:#a1a1aa}
+.lead{font-size:clamp(17px,1.55vw,20px);color:var(--muted);max-width:640px;margin:22px 0 0}
+.light .lead{color:var(--ink-3)}
+.sec-head{max-width:780px;margin-bottom:clamp(40px,6vw,64px)}
+.sec-head h2{margin-top:18px}
+.sec-head.center{text-align:center;margin-left:auto;margin-right:auto}
+.sec-head.center .lead{margin-left:auto;margin-right:auto}
+
+/* ---------- botões ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 24px;border-radius:12px;font-weight:600;font-size:16px;letter-spacing:-.01em;white-space:nowrap;border:1px solid transparent;cursor:pointer;transition:transform .2s ease,box-shadow .25s ease,background .2s ease,border-color .2s ease}
+.btn .i{width:18px;height:18px;transition:transform .2s ease}
+.btn:hover .i{transform:translateX(3px)}
+.btn-primary{background:#fff;color:#0a0a0a;box-shadow:0 12px 40px -12px rgba(16,185,129,.7)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 50px -12px rgba(16,185,129,.85)}
+.btn-ghost{border-color:var(--line-2);color:var(--text);background:rgba(255,255,255,.02)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05)}
+.btn-dark{background:#0a0a0a;color:#fff}
+.btn-dark:hover{transform:translateY(-2px);box-shadow:0 14px 30px -14px rgba(0,0,0,.6)}
+.btn-line{border-color:var(--border);color:var(--ink);background:#fff}
+.btn-line:hover{border-color:#a1a1aa}
+.btn-sm{height:42px;padding:0 16px;font-size:14px;border-radius:10px}
+
+/* ---------- navegação ---------- */
+.nav{position:fixed;inset:0 0 auto;z-index:60;border-bottom:1px solid transparent;transition:background .3s ease,border-color .3s ease}
+.nav.scrolled,.nav.open{background:rgba(10,10,10,.78);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-color:var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px}
+.logo{display:inline-flex;align-items:center;color:#fff}
+.logo svg{height:21px;width:auto}
+.nav-links{display:flex;gap:30px;font-size:14px;color:var(--muted)}
+.nav-links a{transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-cta{display:flex;align-items:center;gap:10px}
+.menu-btn{display:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--line-2);background:transparent;color:#fff;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.menu-btn span{display:block;width:16px;height:2px;background:currentColor;transition:transform .25s,opacity .25s}
+.nav.open .menu-btn span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav.open .menu-btn span:nth-child(2){opacity:0}
+.nav.open .menu-btn span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mnav{display:none;padding:8px var(--gutter) 24px;border-top:1px solid var(--line)}
+.mnav a{display:block;padding:14px 0;font-size:18px;font-weight:600;border-bottom:1px solid var(--line)}
+.mnav .btn{display:flex;margin-top:18px;width:100%}
+.nav.open .mnav{display:block}
+@media (max-width:980px){.nav-links{display:none}.menu-btn{display:inline-flex}}
+@media (max-width:560px){.nav-cta .btn{display:none}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:clamp(128px,16vw,172px) 0 clamp(72px,9vw,120px);overflow:hidden;background:var(--bg)}
+.hero .glow.g1{width:1100px;height:760px;left:50%;top:-320px;transform:translateX(-50%)}
+.hero .glow.g2{width:700px;height:700px;left:50%;top:620px;transform:translateX(-50%);opacity:.9}
+.hero-copy{position:relative;max-width:1080px}
+@media (max-width:700px){.br-d{display:none}}
+.hero-copy h1{margin-top:22px}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:30px 0 0;padding:0;list-style:none}
+.chip{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:#d4d4d8;padding:6px 11px;border-radius:8px;border:1px solid var(--line-2);background:rgba(255,255,255,.03)}
+.chip.on{color:var(--green-2);border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.08)}
+.hero-note{display:flex;align-items:center;gap:8px;margin-top:18px;color:var(--muted-2);font-size:14px}
+.hero-note .i{width:16px;height:16px;color:var(--green)}
+.hero-visual{position:relative;margin-top:clamp(52px,7vw,84px)}
+.tilt{transform-origin:50% 0;transform:perspective(2000px) rotateX(var(--rx,0deg)) scale(var(--sc,1));will-change:transform}
+.float-pill{position:absolute;left:-18px;bottom:16%;z-index:3;display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border-radius:999px;background:rgba(24,24,27,.82);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);color:#fff;font-weight:600;font-size:clamp(13px,1.5vw,18px);letter-spacing:-.01em;box-shadow:0 20px 50px -15px rgba(0,0,0,.8);animation:float 7s ease-in-out infinite}
+.float-toast{position:absolute;right:-18px;top:5%;z-index:3;display:flex;align-items:center;gap:10px;max-width:300px;padding:14px 16px;border-radius:14px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-weight:600;font-size:14px;line-height:1.3;box-shadow:0 24px 60px -20px rgba(0,0,0,.7);animation:float 7s ease-in-out -3.5s infinite}
+.float-toast .i{color:#d97706}
+.float-sync{position:absolute;right:6%;bottom:-22px;z-index:3;display:none;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;background:#0f172a;color:#fff;border:1px solid rgba(255,255,255,.12);font-weight:600;font-size:14px;box-shadow:0 24px 60px -20px rgba(0,0,0,.8)}
+.float-sync.show{display:flex;animation:pop .45s cubic-bezier(.2,.9,.3,1.3)}
+.float-sync b{color:var(--green-2)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@media (max-width:760px){.float-pill{left:10px;bottom:-20px}.float-toast{display:none}.float-sync{right:10px}}
+
+/* ---------- mock do sistema (réplica do Painel de Monitoramento) ---------- */
+.browser{container-type:inline-size;position:relative;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 50px 140px -30px rgba(16,185,129,.45),0 40px 80px -40px rgba(0,0,0,.9)}
+.browser-bar{display:flex;align-items:center;gap:14px;height:38px;padding:0 14px;background:#f4f4f5;border-bottom:1px solid #e4e4e7}
+.dots{display:flex;gap:7px}
+.dots i{width:10px;height:10px;border-radius:50%;background:#d4d4d8}
+.url{flex:1;display:flex;justify-content:center}
+.url span{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:#71717a;background:#fff;border:1px solid #e4e4e7;border-radius:7px;padding:4px 12px}
+.url .i{width:11px;height:11px}
+.app{font-size:clamp(7.5px,1.22cqi,13.5px);color:#0a0a0a;line-height:1.35;text-align:left}
+.app-nav{display:flex;align-items:center;justify-content:space-between;gap:2em;padding:1.25em 2.4em;background:#fff;border-bottom:1px solid #f0f0f1}
+.app-nav .logo-s{height:1.35em;width:auto;color:#0a0a0a}
+.app-nav nav{display:flex;align-items:center;gap:2.2em;font-size:.9em;color:#71717a}
+.app-nav nav .on{color:#0a0a0a;font-weight:600;padding-bottom:.35em;border-bottom:2px solid #0a0a0a}
+.app-nav nav .sep{width:1px;height:1.4em;background:#e4e4e7}
+.app-nav nav .out{color:#ef4444}
+.app-body{padding:1.5em 2.4em 2.2em;background:#fafafa}
+.crumb{font-size:.82em;color:#a1a1aa}
+.crumb b{color:#3f3f46;font-weight:600}
+.app-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1em;margin:.7em 0 1.3em}
+.app-head h3{font-size:1.95em;letter-spacing:-.035em;font-weight:700}
+.app-head p{margin:.25em 0 0;color:#71717a;font-size:.92em}
+.sync-btn{display:inline-flex;align-items:center;gap:.6em;border:0;border-radius:.6em;padding:.85em 1.25em;background:#0a0a0a;color:#fff;font:600 .88em var(--sans);cursor:pointer;white-space:nowrap;transition:transform .15s,background .2s}
+.sync-btn:hover{background:#27272a}
+.sync-btn:active{transform:scale(.97)}
+.sync-btn .i{width:1.15em;height:1.15em}
+.sync-btn.busy .i{animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1em}
+.stat{display:flex;flex-direction:column;justify-content:space-between;gap:.8em;min-height:6.6em;padding:1.1em 1.25em;background:#fff;border:1px solid #e4e4e7;border-radius:.85em}
+.stat small{font-size:.66em;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#a1a1aa}
+.stat b{font-size:2.3em;font-weight:700;letter-spacing:-.035em;line-height:1}
+.stat.navy{background:#0f172a;border-color:#0f172a;color:#fff}
+.stat.navy small{color:#94a3b8}
+.stat.navy b{display:flex;align-items:center;gap:.55em;font-size:1.08em;letter-spacing:-.01em}
+.stat.navy em{font-style:normal;font-size:.74em;color:#94a3b8;margin-top:-.4em}
+.dot{width:.62em;height:.62em;border-radius:50%;background:#10b981;box-shadow:0 0 0 .28em rgba(16,185,129,.22);flex:none}
+.dot.busy{background:#f59e0b;box-shadow:0 0 0 .28em rgba(245,158,11,.25);animation:blink 1s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+.plan-row{display:flex;align-items:center;gap:5em;margin-top:1em;padding:.9em 1.25em;background:#fff;border:1px solid #e4e4e7;border-radius:.85em;font-size:.9em}
+.plan-row small{display:block;font-size:.7em;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#a1a1aa}
+.plan-row em{display:block;font-style:normal;font-size:.8em;color:#a1a1aa}
+.warn{display:flex;align-items:center;gap:1em;margin-top:1em;padding:.8em 1.25em;background:#fffbeb;border:1px solid #fde68a;border-radius:.7em;color:#92400e;font-size:.82em;font-weight:600}
+.warn span{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#b45309;font-weight:500}
+.warn a{white-space:nowrap;text-decoration:underline;text-underline-offset:2px}
+.chart-card{margin-top:1em;padding:1.4em 1.6em 1.1em;background:#fff;border:1px solid #e4e4e7;border-radius:.85em}
+.chart-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1em}
+.chart-head b{font-size:1.15em;letter-spacing:-.02em}
+.chart-head em{display:block;font-style:normal;font-size:.78em;color:#a1a1aa;margin-top:.2em}
+.seg{display:flex;padding:.25em;border-radius:.6em;background:#f4f4f5;font-size:.76em;white-space:nowrap}
+.seg span{padding:.45em .9em;border-radius:.45em;color:#71717a}
+.seg .on{background:#fff;color:#0a0a0a;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.legend{display:flex;gap:1.4em;margin-top:.9em;font-size:.74em;color:#71717a}
+.legend i{display:inline-block;width:.8em;height:.8em;border-radius:.15em;margin-right:.4em;vertical-align:-.05em}
+.c0{background:#111827}.c1{background:#6b7280}.c2{background:#d1d5db}.c3{background:#3b82f6}
+.chart{display:grid;grid-template-columns:repeat(12,1fr);gap:1.1em;height:14em;margin-top:.8em}
+.bar{position:relative;display:grid;grid-template-rows:1fr auto;height:100%;cursor:default}
+.bar .col{display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-height:0}
+.bar .v{font-size:.7em;color:#71717a;text-align:center;margin-bottom:.4em;opacity:0;transition:opacity .4s ease calc(var(--d) + .5s)}
+.bar .stack{display:flex;flex-direction:column-reverse;height:var(--h);border-radius:.25em .25em 0 0;overflow:hidden;transform-origin:bottom;transform:scaleY(0);transition:transform 1s cubic-bezier(.2,.8,.2,1) var(--d)}
+.bar .stack i{display:block;flex:none}
+.bar .m{font-size:.72em;color:#a1a1aa;text-align:center;margin-top:.5em}
+.chart.in .stack{transform:scaleY(1)}
+.chart.in .v{opacity:1}
+.bar .tip{position:absolute;bottom:calc(var(--h) + 2.6em);left:50%;transform:translate(-50%,6px);z-index:2;min-width:9.5em;padding:.7em .8em;border-radius:.6em;background:#0a0a0a;color:#fff;font-size:.74em;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s}
+.bar .tip b{display:block;margin-bottom:.2em}
+.bar .tip span{display:flex;justify-content:space-between;gap:1em;color:#d4d4d8}
+.bar:hover .tip{opacity:1;transform:translate(-50%,0)}
+.bar:hover .stack{filter:brightness(1.08)}
+@container (max-width:640px){
+  .app{font-size:2.5cqi}
+  .app-nav{padding:1.1em 1.4em}
+  .app-nav nav a:not(.on),.app-nav nav .sep{display:none}
+  .app-body{padding:1.3em 1.4em 1.6em}
+  .app-head h3{font-size:1.6em}
+  .app-head p{display:none}
+  .sync-btn span{display:none}
+  .stats{grid-template-columns:1fr 1fr;gap:.8em}
+  .plan-row{display:none}
+  .warn span{display:none}
+  .warn{justify-content:space-between}
+  .seg,.legend{display:none}
+  .chart{gap:.45em;height:12em}
+  .bar .v{display:none}
+  .bar .m{font-size:.62em}
+}
+
+/* ---------- prova em números ---------- */
+.proof{position:relative;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0c0c0e,#0a0a0a)}
+.proof-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.proof-item{padding:40px 28px;border-left:1px solid var(--line)}
+.proof-item:first-child{border-left:0;padding-left:0}
+.proof-item b{display:block;font-size:clamp(38px,4.4vw,56px);font-weight:800;letter-spacing:-.05em;line-height:1}
+.proof-item b .g{color:var(--green)}
+.proof-item > span{display:block;margin-top:12px;color:var(--muted);font-size:15px;max-width:240px}
+@media (max-width:860px){.proof-grid{grid-template-columns:1fr 1fr}.proof-item{padding:28px 18px}.proof-item:nth-child(3){border-left:0;padding-left:0}.proof-item:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* ---------- problema ---------- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center}
+@media (max-width:960px){.two{grid-template-columns:1fr}}
+.xlist{list-style:none;margin:32px 0 0;padding:0;display:grid;gap:14px}
+.xlist li{display:flex;gap:14px;align-items:flex-start;font-size:17px;color:var(--ink-2)}
+.xi{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;flex:none;margin-top:1px}
+.xi .i{width:15px;height:15px;stroke-width:2.4}
+.xi.no{background:#fef2f2;color:#ef4444}
+.xi.yes{background:#ecfdf5;color:#059669}
+.dark .xi.no{background:rgba(239,68,68,.12);color:var(--red-2)}
+.dark .xi.yes{background:rgba(16,185,129,.14);color:var(--green-2)}
+.mult{display:flex;align-items:center;gap:16px;margin-top:30px;padding:18px 20px;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}
+.mult .xi{width:44px;height:44px;border-radius:12px}
+.mult .xi .i{width:22px;height:22px;stroke-width:2}
+.mult small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:#a1a1aa}
+.mult b{font-size:19px;letter-spacing:-.02em}
+.pain{position:relative;padding:clamp(28px,4vw,44px);border-radius:24px;background:#0a0a0a;color:#fff;overflow:hidden;box-shadow:0 40px 80px -40px rgba(0,0,0,.5)}
+.pain .glow{width:520px;height:520px;right:-220px;bottom:-260px;background:radial-gradient(closest-side,rgba(59,130,246,.22),transparent)}
+.pain-t{position:relative;font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-.04em;line-height:1.08;margin:18px 0 28px}
+.pain-t .red{color:var(--red-2)}
+.pain .eyebrow{color:var(--red-2)}
+.pain-cards{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pc{padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.pc .xi{width:38px;height:38px;border-radius:10px;background:rgba(239,68,68,.12);color:var(--red-2);margin-bottom:26px}
+.pc .xi .i{width:19px;height:19px;stroke-width:2}
+.pc b{display:block;font-size:16px;letter-spacing:-.02em}
+.pc span{display:block;margin-top:6px;font-size:13.5px;color:var(--muted);line-height:1.4}
+@media (max-width:560px){.pain-cards{grid-template-columns:1fr}.pc .xi{margin-bottom:14px}}
+
+/* ---------- robô ---------- */
+#robo .glow.g1{width:900px;height:640px;left:50%;top:-180px;transform:translateX(-50%)}
+.clock-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.clock{position:relative;padding:26px 26px 24px;border-radius:20px;background:#fff;color:#0a0a0a;box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+.clock small{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:#059669}
+.clock small .i{width:16px;height:16px}
+.clock b{display:block;margin:14px 0 8px;font-size:clamp(52px,6vw,76px);font-weight:800;letter-spacing:-.06em;line-height:.95}
+.clock span{color:#71717a;font-size:15px}
+.clock.next{background:var(--card);color:#fff;border:1px solid rgba(16,185,129,.35);box-shadow:0 0 0 1px rgba(16,185,129,.1),0 30px 80px -30px rgba(16,185,129,.45)}
+.clock.next small{color:var(--green-2)}
+.clock.next b{font-size:clamp(40px,4.4vw,56px);margin:22px 0 12px}
+.clock.next span{color:var(--muted)}
+.clock.next em{font-style:normal;color:#fff;font-weight:600}
+.live{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(16,185,129,.6);animation:ping 2s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(16,185,129,.55)}80%,100%{box-shadow:0 0 0 10px rgba(16,185,129,0)}}
+.tags{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:26px 0 0}
+@media (max-width:860px){.clock-row{grid-template-columns:1fr 1fr}.clock.next{grid-column:1/-1}}
+@media (max-width:480px){.clock{padding:20px}.clock b{font-size:46px}}
+.robo-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;margin-top:clamp(56px,7vw,88px)}
+@media (max-width:960px){.robo-grid{grid-template-columns:1fr}}
+.panel{position:relative;padding:clamp(24px,3vw,36px);border-radius:24px;background:linear-gradient(180deg,#141416,#0e0e10);border:1px solid var(--line);overflow:hidden}
+.panel h3{margin-top:14px}
+.panel > p{margin:10px 0 24px;color:var(--muted);max-width:460px}
+.sheet{padding:20px;border-radius:16px;background:#fff;color:#0a0a0a;box-shadow:0 30px 60px -30px rgba(0,0,0,.9)}
+.tree{list-style:none;margin:0;padding:0;font-size:15px}
+.tree ul{list-style:none;margin:0;padding:0 0 0 22px;border-left:1px dashed #e4e4e7;margin-left:9px}
+.tree li{padding:6px 0}
+.tree .n{display:flex;align-items:center;gap:10px;color:#3f3f46}
+.tree .n .i{width:18px;height:18px;color:#71717a}
+.tree .root{font-weight:700;color:#0a0a0a}
+.tree .leaf{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;margin-left:-10px;border-radius:10px;background:#ecfdf5;color:#047857;font-weight:700}
+.tree .leaf .i{color:#059669}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.p-ok{background:#ecfdf5;color:#047857}
+.p-cx{background:#fef2f2;color:#dc2626}
+.p-sb{background:#fefce8;color:#a16207}
+.p-at{background:#fffbeb;color:#b45309}
+.p-gr{background:#f4f4f5;color:#52525b}
+.p-green{background:#10b981;color:#fff}
+.nt{width:100%;border-collapse:collapse;font-size:14px}
+.nt th{font:500 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#a1a1aa;text-align:left;padding:0 10px 10px;border-bottom:1px solid #e4e4e7}
+.nt td{padding:11px 10px;border-bottom:1px solid #f4f4f5;white-space:nowrap}
+.nt tr:last-child td{border-bottom:0}
+.nt .r{text-align:right}
+.nt .mono{font-family:var(--mono);font-size:12.5px}
+.nt tr.cx td{background:#fef2f2}
+.nt tr.sb td{background:#fefce8}
+.nt tr.cx td:first-child,.nt tr.sb td:first-child{border-radius:8px 0 0 8px}
+.nt tr.cx td:last-child,.nt tr.sb td:last-child{border-radius:0 8px 8px 0}
+.nt tr.cx .nm{text-decoration:line-through;text-decoration-color:rgba(220,38,38,.5);color:#71717a}
+.mk-l .sh{display:none}
+@media (max-width:560px){.nt .hide-s{display:none}.nt td,.nt th{padding-left:6px;padding-right:6px}.nt td.w{white-space:normal}.act .xml{display:none}.tree ul{padding-left:12px;margin-left:8px}.tree{font-size:14px}.mk-l .lg,.lr-meta .lg{display:none}.mk-l .sh{display:inline}.eyebrow{letter-spacing:.2em}}
+
+/* ---------- como funciona ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
+.step{position:relative;padding:30px 28px;border-radius:20px;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow)}
+.step .num{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--green)}
+.step h3{margin-top:22px}
+.step p{margin:10px 0 0;color:var(--ink-3)}
+.step:not(:last-child)::after{content:"";position:absolute;top:50%;right:-12px;width:8px;height:8px;border-top:2px solid #d4d4d8;border-right:2px solid #d4d4d8;transform:translateY(-50%) rotate(45deg);z-index:1}
+@media (max-width:860px){.steps{grid-template-columns:1fr}.step:not(:last-child)::after{display:none}}
+
+/* ---------- tour (abas) ---------- */
+.tour{display:grid;grid-template-columns:330px 1fr;gap:28px;align-items:start}
+.tabs{display:flex;flex-direction:column;gap:6px}
+.tab{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start;width:100%;padding:16px;text-align:left;background:transparent;border:1px solid transparent;border-radius:16px;color:var(--ink);cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s}
+.tab:hover{background:rgba(0,0,0,.025)}
+.tab .ti{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#fff;border:1px solid var(--border);color:var(--ink-2);transition:background .2s,color .2s,border-color .2s}
+.tab b{display:block;font-size:16px;letter-spacing:-.02em}
+.tab span{display:block;margin-top:3px;font-size:14px;line-height:1.45;color:var(--ink-3)}
+.tab[aria-selected="true"]{background:#fff;border-color:var(--border);box-shadow:var(--shadow)}
+.tab[aria-selected="true"] .ti{background:#0a0a0a;border-color:#0a0a0a;color:#34d399}
+.stage{position:relative;background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 40px 90px -40px rgba(0,0,0,.35)}
+.stage .browser-bar{background:#fafafa}
+.tp{display:none;padding:clamp(18px,3vw,32px);min-height:470px}
+.tp.on{display:block;animation:fadeUp .45s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tp-h{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.tp-h h4{font-size:22px;letter-spacing:-.03em;font-weight:700}
+.tp-h p{margin:4px 0 0;color:var(--ink-3);font-size:14px}
+@media (max-width:1000px){
+  .tour{grid-template-columns:1fr}
+  .tabs{flex-direction:row;overflow-x:auto;gap:8px;margin:0 calc(-1 * var(--gutter));padding:4px var(--gutter) 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{grid-template-columns:auto auto;align-items:center;gap:10px;width:auto;flex:none;padding:8px 14px 8px 8px;border-color:var(--border);background:#fff;border-radius:999px}
+  .tab .ti{width:32px;height:32px;border-radius:999px}
+  .tab .ti .i{width:16px;height:16px}
+  .tab > span:not(.ti) > span{display:none}
+  .tab b{font-size:14.5px;white-space:nowrap}
+  .tp{min-height:0}
+}
+/* explorador */
+.xp-crumbs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:#71717a;margin-bottom:14px}
+.xp-crumbs i{font-style:normal;color:#d4d4d8}
+.xp-crumbs b{color:#2563eb}
+.search{display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;border:1.5px solid #e4e4e7;border-radius:12px;background:#fff;transition:border-color .2s,box-shadow .2s}
+.search:focus-within,.search.typing{border-color:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.12)}
+.search .i{width:18px;height:18px;color:#a1a1aa}
+.search input{flex:1;min-width:0;border:0;outline:0;font:500 16px var(--sans);color:#0a0a0a;background:transparent}
+.search input::placeholder{color:#a1a1aa;font-weight:400}
+.search .res{font-size:12px;font-weight:600;color:#047857;background:#ecfdf5;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.xp-table{margin-top:14px;overflow-x:auto}
+.xp-table .nt td{transition:background .25s}
+.xp-table tr.hit td{background:#ecfdf5}
+.xp-table tr.hit td:first-child{box-shadow:inset 3px 0 0 #10b981}
+.act{display:inline-flex;gap:6px}
+.act span{font:600 10.5px var(--mono);padding:4px 7px;border-radius:6px;border:1px solid #e4e4e7;color:#52525b}
+.act span.pdf{color:#dc2626;border-color:#fecaca}
+.act span.xml{color:#2563eb;border-color:#bfdbfe}
+/* documentos */
+.docs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.doc{position:relative;padding:14px;border-radius:14px;border:1px solid #e4e4e7;background:#fff;overflow:hidden}
+.doc .dh{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-radius:6px;background:#0a0a0a;color:#fff;font:700 11px var(--mono);letter-spacing:.06em}
+.doc .ln{height:6px;border-radius:3px;background:#f0f0f1;margin-top:9px}
+.doc .ln.s{width:60%}.doc .ln.m{width:80%}
+.doc .ibs{display:flex;justify-content:space-between;margin-top:12px;padding:6px 8px;border-radius:6px;background:#ecfdf5;color:#047857;font:600 10px var(--mono)}
+.doc .foot{margin-top:12px}
+.doc .foot b{display:block;font-size:15px;letter-spacing:-.02em}
+.doc .foot span{font-size:12.5px;color:#71717a}
+.stamp{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%) rotate(-14deg);padding:4px 12px;border:2.5px solid #ef4444;border-radius:8px;color:#ef4444;font:800 15px var(--sans);letter-spacing:.1em;background:rgba(255,255,255,.85)}
+.quadro{margin-top:16px;border:1.5px solid #0a0a0a;border-radius:10px;overflow:hidden}
+.quadro .qh{padding:8px 12px;background:#0a0a0a;color:#fff;font:700 11px var(--mono);letter-spacing:.12em}
+.quadro .qg{display:grid;grid-template-columns:repeat(4,1fr)}
+.quadro .qg div{padding:9px 12px;border-right:1px solid #e4e4e7;border-top:1px solid #e4e4e7}
+.quadro .qg div:nth-child(4n){border-right:0}
+.quadro small{display:block;font:500 9.5px var(--mono);letter-spacing:.1em;color:#71717a;text-transform:uppercase}
+.quadro b{font:600 13px var(--mono)}
+@media (max-width:560px){.docs{grid-template-columns:1fr 1fr}.docs .doc:nth-child(3){display:none}.quadro .qg{grid-template-columns:1fr 1fr}.quadro .qg div:nth-child(2n){border-right:0}}
+/* relatórios */
+.reps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.rep{padding:18px;border-radius:14px;border:1px solid #e4e4e7;background:#fff}
+.rep .ri{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;color:#fff;margin-bottom:22px}
+.rep b{display:block;font-size:16px;letter-spacing:-.02em}
+.rep span{display:block;margin-top:6px;font-size:13.5px;color:#71717a;line-height:1.45}
+.zip{margin-top:16px;padding:18px;border-radius:14px;background:#0a0a0a;color:#fff}
+.zip-top{display:flex;justify-content:space-between;gap:10px;font-weight:600}
+.zip-top em{font-style:normal;font-family:var(--mono);color:var(--green-2)}
+.zip-bar{height:8px;margin:14px 0 10px;border-radius:99px;background:#27272a;overflow:hidden}
+.zip-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#059669,#34d399)}
+.zip-bot{display:flex;justify-content:space-between;gap:10px;font:500 12px var(--mono);color:#a1a1aa}
+.zip-bot .done{color:var(--green-2)}
+@media (max-width:640px){.reps{grid-template-columns:1fr}.rep{display:grid;grid-template-columns:42px 1fr;gap:4px 14px}.rep .ri{margin:0;grid-row:span 2}}
+/* xmls por empresa */
+.spark{display:inline-flex;align-items:flex-end;gap:2px;height:18px;vertical-align:middle}
+.spark i{display:block;width:5px;border-radius:1.5px;background:#d4d4d8}
+.spark i:last-child{background:#10b981}
+/* clientes */
+.cli{display:grid;grid-template-columns:1fr 1.1fr;gap:16px}
+.box{padding:16px;border-radius:14px;border:1px solid #e4e4e7;background:#fff}
+.box h5{margin:0;font-size:15px;letter-spacing:-.02em}
+.box p{margin:4px 0 12px;font-size:13px;color:#71717a}
+.ta{min-height:92px;padding:12px;border-radius:10px;border:1.5px solid #e4e4e7;font:500 14px var(--mono);color:#0a0a0a;white-space:pre-wrap}
+.ta .caret{display:inline-block;width:1.5px;height:1.1em;background:#10b981;vertical-align:-.2em;animation:blink 1s steps(1) infinite}
+.box .btn{height:38px;font-size:13px;margin-top:12px;padding:0 14px}
+.cl{list-style:none;margin:0;padding:0}
+.cl li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f4f4f5}
+.cl li:last-child{border-bottom:0}
+.cl b{display:block;font-size:13.5px}
+.cl small{font:500 11.5px var(--mono);color:#a1a1aa}
+.cl li.new{animation:fadeUp .5s ease}
+@media (max-width:760px){.cli{grid-template-columns:1fr}}
+
+/* ---------- simples ---------- */
+#simples .glow.g1{width:760px;height:760px;right:-240px;top:-120px}
+.nums{display:grid;gap:10px;margin-top:34px}
+.numc{display:flex;align-items:center;gap:20px;padding:16px 20px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.numc b{min-width:150px;font-size:clamp(28px,3vw,36px);font-weight:800;letter-spacing:-.05em}
+.numc span{font-size:14px;color:var(--muted);line-height:1.4}
+.numc span strong{display:block;color:#fff;font-size:16px;letter-spacing:-.01em}
+@media (max-width:480px){.numc{flex-direction:column;align-items:flex-start;gap:4px}}
+.lim{padding:clamp(20px,2.6vw,28px);border-radius:22px;background:#fff;color:#0a0a0a;box-shadow:0 50px 120px -40px rgba(16,185,129,.35),0 30px 60px -30px rgba(0,0,0,.9)}
+.lim-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid #f0f0f1}
+.lim-h b{font-size:17px;letter-spacing:-.02em}
+.lim-legend{display:flex;gap:6px;flex-wrap:wrap}
+.lr{padding:18px 0 22px;border-bottom:1px solid #f4f4f5}
+.lr:last-of-type{border-bottom:0}
+.lr-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lr-top b{font-size:15px;letter-spacing:-.01em}
+.lr-meta{display:flex;justify-content:space-between;gap:10px;margin:6px 0 12px;font-size:12.5px;color:#71717a}
+.lr-meta strong{color:#0a0a0a;font-family:var(--mono);font-size:12.5px}
+.track{position:relative;height:10px;border-radius:99px;background:#f4f4f5}
+.fill,.proj{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:99px;transition:width 1.6s cubic-bezier(.2,.8,.2,1)}
+.proj{background:repeating-linear-gradient(-45deg,rgba(217,119,6,.5) 0 4px,rgba(217,119,6,.14) 4px 8px);transition-delay:.5s}
+.in .fill,.in .proj{width:var(--w)}
+.f-red{background:#ef4444}.f-or{background:#d97706}.f-gr{background:#10b981}
+.mk{position:absolute;top:-5px;bottom:-5px;width:2px;border-radius:2px;background:#3f3f46}
+.mk-l{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#a1a1aa;position:relative;height:14px}
+.mk-l span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.lr-alert{margin-top:12px;font-size:13px;font-weight:600}
+.t-red{color:#dc2626}.t-or{color:#b45309}.t-gr{color:#047857}
+.rules{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin-top:clamp(48px,6vw,72px)}
+@media (max-width:960px){.rules{grid-template-columns:1fr}}
+.cfop{display:grid;gap:10px}
+.cfop-b{padding:18px 20px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.cfop-b small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+.cfop-b.in-s small{color:var(--green-2)}
+.cfop-b.out-s small{color:var(--red-2)}
+.cfop-b li{display:flex;gap:12px;align-items:flex-start;padding:6px 0;color:#e4e4e7}
+.cfop-b ul{list-style:none;margin:0;padding:0}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini div{padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.mini .mi{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,.12);color:var(--green-2);margin-bottom:16px}
+.mini .mi .i{width:18px;height:18px}
+.mini b{display:block;font-size:15.5px;letter-spacing:-.02em}
+.mini span{display:block;margin-top:4px;font-size:13.5px;color:var(--muted);line-height:1.4}
+.laws{display:grid;gap:8px;margin-top:22px}
+.laws li{display:flex;gap:12px;align-items:flex-start;color:#d4d4d8;font-size:15px}
+.laws{list-style:none;padding:0}
+
+/* ---------- reforma ---------- */
+.code{position:relative;padding:22px 24px;border-radius:18px;background:#0a0a0a;color:#e4e4e7;font:500 clamp(12.5px,1.3vw,14.5px)/1.75 var(--mono);box-shadow:0 40px 80px -40px rgba(0,0,0,.6);overflow:hidden;border:1px solid #1f1f22}
+.code::after{content:"";position:absolute;right:-120px;top:-120px;width:300px;height:300px;border-radius:50%;background:radial-gradient(closest-side,rgba(16,185,129,.25),transparent)}
+.code .t{color:#93c5fd}.code .v{color:#34d399}.code .c{color:#52525b}
+.code-h{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#71717a}
+.code pre{margin:0;font:inherit;white-space:pre;overflow-x:auto}
+.ref-visual{position:relative}
+.ref-visual .quadro{position:relative;margin:-26px 0 0 clamp(0px,6%,48px);background:#fff;box-shadow:0 30px 60px -25px rgba(0,0,0,.35);z-index:2}
+.checks{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:14px}
+.checks li{display:flex;gap:14px;align-items:flex-start;font-size:16.5px;color:var(--ink-2)}
+.checks li b{color:var(--ink)}
+.ref-row{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;margin-top:clamp(48px,6vw,72px)}
+@media (max-width:960px){.ref-row{grid-template-columns:1fr}}
+.card-l{padding:clamp(20px,2.6vw,28px);border-radius:20px;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow)}
+.card-l h3{margin:12px 0 6px}
+.card-l > p{margin:0 0 18px;color:var(--ink-3)}
+.card-d{padding:clamp(20px,2.6vw,28px);border-radius:20px;background:#0a0a0a;color:#fff}
+.card-d h3{margin:12px 0 18px}
+.card-d .eyebrow{color:var(--green-2)}
+.tax{overflow-x:auto}
+.tax .nt td,.tax .nt th{text-align:right}
+.tax .nt td:first-child,.tax .nt th:first-child{text-align:left}
+.tax .nt .ib{color:#059669;font-weight:600}
+.tax .nt tr.tot td{font-weight:700;border-top:1.5px solid #0a0a0a}
+.ret{display:grid}
+.ret div{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #1f1f22;font-size:15px;color:#d4d4d8}
+.ret div span:last-child{font-family:var(--mono)}
+.ret div.liq{border-bottom:0;padding-top:16px;color:#fff;font-weight:700}
+.ret div.liq span:last-child{color:var(--green-2);font-size:18px}
+.card-d > p{margin:14px 0 0;color:var(--muted);font-size:14.5px}
+
+/* ---------- sistema de verdade ---------- */
+#sistema .glow.g1{width:1000px;height:700px;left:50%;top:10%;transform:translateX(-50%);opacity:.8}
+.gal{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.shot{margin:0}
+.shot .frame{position:relative;display:flex;align-items:flex-end;justify-content:center;aspect-ratio:4/3;padding:28px 14px 0;border-radius:22px;background:radial-gradient(120% 80% at 50% 100%,rgba(16,185,129,.16),transparent 60%),#0e0e10;border:1px solid var(--line);overflow:hidden;transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .3s}
+.shot:hover .frame{transform:translateY(-4px);border-color:rgba(16,185,129,.35)}
+.shot img{width:100%;height:100%;object-fit:contain;object-position:50% 100%;-webkit-mask-image:radial-gradient(130% 110% at 50% 20%,#000 62%,transparent 86%);mask-image:radial-gradient(130% 110% at 50% 20%,#000 62%,transparent 86%)}
+.shot figcaption{padding:16px 4px 0}
+.shot figcaption b{display:block;font-size:18px;letter-spacing:-.02em}
+.shot figcaption span{color:var(--muted);font-size:15px}
+.browser-note{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 24px;margin-top:40px;color:var(--muted);font-size:15px}
+.browser-note span{display:inline-flex;align-items:center;gap:8px}
+.browser-note .i{width:18px;height:18px;color:var(--green)}
+@media (max-width:760px){.gal{grid-template-columns:1fr}}
+
+/* ---------- antes × depois ---------- */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:980px;margin:0 auto}
+.vs-c{padding:clamp(22px,3vw,32px);border-radius:22px}
+.vs-c small{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:10px}
+.vs-c ul{list-style:none;margin:0;padding:0}
+.vs-c li{display:flex;gap:14px;align-items:flex-start;padding:15px 0;border-bottom:1px solid;font-size:16.5px}
+.vs-c li:last-child{border-bottom:0}
+.vs-no{background:#0a0a0a;color:#d4d4d8}
+.vs-no small{color:var(--red-2)}
+.vs-no li{border-color:#1f1f22}
+.vs-yes{background:#fff;color:#0a0a0a;border:1.5px solid #10b981;box-shadow:0 40px 80px -40px rgba(16,185,129,.55)}
+.vs-yes small{color:#059669}
+.vs-yes li{border-color:#f0f0f1;font-weight:600}
+@media (max-width:760px){.vs{grid-template-columns:1fr}}
+
+/* ---------- segurança ---------- */
+.sec-list{list-style:none;margin:32px 0 0;padding:0;display:grid;gap:10px}
+.sec-list li{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:16px;color:#e4e4e7}
+.sec-list .si{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,.12);color:var(--green-2);flex:none}
+.sec-list .si .i{width:18px;height:18px}
+.shield{position:relative;display:grid;place-items:center;aspect-ratio:1;max-width:460px;margin:0 auto;width:100%}
+.shield .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(16,185,129,.18)}
+.shield .ring.r2{inset:12%;border-color:rgba(16,185,129,.26)}
+.shield .ring.r3{inset:24%;border-color:rgba(16,185,129,.34)}
+.shield .ring.pulse{inset:24%;border:2px solid rgba(16,185,129,.5);animation:ringp 3.2s ease-out infinite}
+@keyframes ringp{from{transform:scale(1);opacity:.9}to{transform:scale(2.05);opacity:0}}
+.shield .core{position:relative;display:grid;place-items:center;width:44%;aspect-ratio:1;border-radius:28%;background:linear-gradient(145deg,rgba(16,185,129,.28),rgba(16,185,129,.06));border:1px solid rgba(52,211,153,.45);box-shadow:0 0 80px rgba(16,185,129,.35),inset 0 1px 0 rgba(255,255,255,.15);transform:rotate(-8deg)}
+.shield .core .i{width:52%;height:52%;color:var(--green-2);stroke-width:1.6;transform:rotate(8deg)}
+.shield .tag{position:absolute;padding:8px 12px;border-radius:10px;background:rgba(18,18,20,.9);border:1px solid var(--line-2);font:500 12px var(--mono);color:#d4d4d8;white-space:nowrap}
+.shield .tag b{color:var(--green-2);font-weight:600}
+.shield .t1{top:14%;left:2%}.shield .t2{top:30%;right:0}.shield .t3{bottom:14%;left:8%}
+@media (max-width:960px){.shield{max-width:360px}}
+
+/* ---------- planos ---------- */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1040px;margin:0 auto}
+.plan{position:relative;display:flex;flex-direction:column;padding:30px 28px;border-radius:22px;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow)}
+.plan small{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:#a1a1aa}
+.plan .big{margin-top:14px;font-size:clamp(40px,4vw,50px);font-weight:800;letter-spacing:-.055em;line-height:1}
+.plan .per{margin-top:6px;color:var(--ink-3)}
+.plan ul{list-style:none;margin:24px 0 28px;padding:22px 0 0;border-top:1px solid var(--border);display:grid;gap:12px;flex:1}
+.plan li{display:flex;gap:12px;align-items:center;font-size:15.5px}
+.plan li .i{width:18px;height:18px;color:#059669}
+.plan .btn{width:100%}
+.plan.top{background:#0a0a0a;color:#fff;border-color:#0a0a0a;box-shadow:0 50px 100px -40px rgba(16,185,129,.6);transform:translateY(-10px)}
+.plan.top::before{content:"";position:absolute;inset:-1px;border-radius:23px;padding:1px;background:linear-gradient(160deg,rgba(52,211,153,.9),rgba(16,185,129,.1) 45%,transparent);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.plan.top .per{color:var(--muted)}
+.plan.top ul{border-color:#27272a}
+.plan.top li .i{color:var(--green-2)}
+.badge{position:absolute;top:-13px;right:22px;padding:5px 12px;border-radius:999px;background:#10b981;color:#fff;font-size:12px;font-weight:700;letter-spacing:.01em}
+.plans-note{max-width:640px;margin:36px auto 0;text-align:center;color:var(--ink-3)}
+@media (max-width:900px){.plans{grid-template-columns:1fr;max-width:460px}.plan.top{transform:none}}
+
+/* ---------- faq ---------- */
+.faq{max-width:840px;margin:0 auto}
+.faq details{border-bottom:1px solid var(--border)}
+.faq summary{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;font-size:clamp(17px,1.8vw,19px);font-weight:600;letter-spacing:-.02em;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .pm{position:relative;width:30px;height:30px;border-radius:50%;border:1px solid var(--border);flex:none;transition:background .2s,border-color .2s}
+.faq summary .pm::before,.faq summary .pm::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.8px;background:var(--ink);transform:translate(-50%,-50%);transition:transform .25s}
+.faq summary .pm::after{transform:translate(-50%,-50%) rotate(90deg)}
+.faq details[open] summary .pm{background:#0a0a0a;border-color:#0a0a0a}
+.faq details[open] summary .pm::before,.faq details[open] summary .pm::after{background:#fff}
+.faq details[open] summary .pm::after{transform:translate(-50%,-50%) rotate(0)}
+.faq details p{margin:0;padding:0 50px 24px 0;color:var(--ink-3);font-size:16px}
+
+/* ---------- cta final ---------- */
+.cta{position:relative;text-align:center;padding:clamp(96px,13vw,160px) 0;overflow:hidden}
+.cta .glow.g1{width:900px;height:900px;left:50%;top:50%;transform:translate(-50%,-50%)}
+.cta-mark{display:grid;gap:10px;width:74px;margin:0 auto 36px;filter:drop-shadow(0 0 30px rgba(16,185,129,.55))}
+.cta-mark i{display:block;height:15px;background:#fff}
+.cta h2{max-width:900px;margin:18px auto 0}
+.cta .lead{margin-left:auto;margin-right:auto}
+.cta .hero-ctas{justify-content:center}
+.cta-phone{display:inline-flex;align-items:center;gap:10px;margin-top:26px;color:var(--muted);font-size:15px}
+.cta-phone .i{width:18px;height:18px;color:var(--green)}
+.cta-phone a{color:#fff;font-weight:600}
+
+/* ---------- rodapé ---------- */
+.foot{padding:56px 0 40px;border-top:1px solid var(--line);background:#080808;color:var(--muted);font-size:14px}
+.foot-in{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.foot .logo svg{height:20px}
+.foot p{margin:14px 0 0;max-width:340px}
+.foot nav{display:grid;grid-template-columns:repeat(2,auto);gap:10px 40px}
+.foot nav a:hover{color:#fff}
+.foot-b{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:44px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted-2)}
+.foot-b .mono{font-family:var(--mono);letter-spacing:.14em;text-transform:uppercase}
+
+/* ---------- botão flutuante ---------- */
+.fab{position:fixed;right:18px;bottom:18px;z-index:55;display:inline-flex;align-items:center;gap:10px;height:54px;padding:0 20px 0 16px;border-radius:999px;background:#10b981;color:#03140d;font-weight:700;box-shadow:0 18px 40px -12px rgba(16,185,129,.8);transform:translateY(120px);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.fab.show{transform:none}
+.fab .i{width:22px;height:22px}
+@media (max-width:560px){.fab span{display:none}.fab{padding:0;width:56px;justify-content:center}}
+
+/* ---------- animação de entrada ---------- */
+.js .reveal{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.js .reveal.in{opacity:1;transform:none}
+.js .reveal.d1{transition-delay:.08s}.js .reveal.d2{transition-delay:.16s}.js .reveal.d3{transition-delay:.24s}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .reveal{opacity:1;transform:none}
+  .bar .stack{transform:none}.bar .v{opacity:1}
+  .fill,.proj{width:var(--w)}
+}
+</style>
+</head>
+<body>
+
+<!-- ícones -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="logo" viewBox="0 0 131 20">
+      <g fill="currentColor"><rect width="20" height="4"/><rect y="8" width="20" height="4"/><rect y="16" width="20" height="4"/></g>
+      <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round">
+        <path d="M27 4.6H38M27 10H38M27 15.4H38"/>
+        <path d="M42.5 16.5V4.6H51.3V10H42.5"/>
+        <path d="M56.9 3.5V16.5"/>
+        <path d="M61.6 3.5L66.9 16.2L72.2 3.5" stroke-linejoin="miter"/>
+        <path d="M75.8 4.6H86.8M75.8 10H86.8M75.8 15.4H86.8"/>
+        <path d="M91.3 16.5V4.6H100.1V10H91.3M95.5 10L100.9 16.5"/>
+        <path d="M115.6 4.6H105.7V10H114.5V15.4H104.6"/>
+        <rect x="120.1" y="4.6" width="8.8" height="10.8" rx="1.2"/>
+      </g>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01M6 18h.01"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  </defs>
+</svg>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="nav" aria-label="Principal">
+  <div class="wrap nav-in">
+    <a href="#topo" class="logo" aria-label="Epiverso, início"><svg viewBox="0 0 131 20" aria-hidden="true"><use href="#logo"/></svg></a>
+    <div class="nav-links">
+      <a href="#robo">Robô</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#simples">Simples</a>
+      <a href="#reforma">IBS/CBS</a>
+      <a href="#seguranca">Segurança</a>
+      <a href="#planos">Planos</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-primary btn-sm" data-wa href="https://wa.me/5548992086832">Agendar demonstração <svg class="i"><use href="#i-arrow"/></svg></a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mnav"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mnav" id="mnav">
+    <a href="#robo">Robô</a>
+    <a href="#recursos">Recursos</a>
+    <a href="#simples">Simples Nacional</a>
+    <a href="#reforma">IBS/CBS</a>
+    <a href="#seguranca">Segurança</a>
+    <a href="#planos">Planos</a>
+    <a class="btn btn-primary" data-wa href="https://wa.me/5548992086832">Agendar demonstração <svg class="i"><use href="#i-arrow"/></svg></a>
+  </div>
+</nav>
+
+<main>
+<!-- ===================== HERO ===================== -->
+<header class="hero grid-bg" id="topo">
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="eyebrow reveal">Painel fiscal para escritórios contábeis</span>
+      <h1 class="h1 reveal d1">Todo o fiscal do <br class="br-d">escritório <span class="g">em uma tela.</span></h1>
+      <p class="lead reveal d2">O robô da Epiverso busca na SEFAZ as notas de todos os seus clientes às 00h e às 12h, organiza cada XML no lugar certo e avisa antes de o problema chegar ao fechamento.</p>
+      <div class="hero-ctas reveal d3">
+        <a class="btn btn-primary" data-wa href="https://wa.me/5548992086832">Agendar demonstração <svg class="i"><use href="#i-arrow"/></svg></a>
+        <a class="btn btn-ghost" href="#recursos">Ver o painel por dentro</a>
+      </div>
+      <ul class="chips reveal d3" aria-label="Documentos suportados">
+        <li class="chip">NF-e</li><li class="chip">NFC-e</li><li class="chip">CT-e</li><li class="chip">NFS-e</li><li class="chip on">IBS/CBS</li>
+      </ul>
+    </div>
+
+    <div class="hero-visual reveal d2">
+      <div class="tilt" id="tilt">
+        <div class="browser" role="img" aria-label="Painel de Monitoramento do Epiverso: clientes ativos, XMLs armazenados, sincronização com a SEFAZ em dia e gráfico de XMLs por mês">
+          <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url"><span><svg class="i"><use href="#i-lock"/></svg>notas.seudominio.com.br</span></span><span style="width:44px"></span></div>
+          <div class="app">
+            <div class="app-nav">
+              <svg class="logo-s" viewBox="0 0 131 20" aria-hidden="true"><use href="#logo"/></svg>
+              <nav><a class="on">Visão Geral</a><a>Clientes &amp; Config</a><a>Explorador Avançado</a><span class="sep"></span><a>Minha Conta</a><a class="out">Sair da Sessão</a></nav>
+            </div>
+            <div class="app-body">
+              <div class="crumb">Painel Fiscal &nbsp;/&nbsp; <b>Visão Geral</b></div>
+              <div class="app-head">
+                <div><h3>Painel de Monitoramento</h3><p>Automação de extração e cruzamento SEFAZ</p></div>
+                <button class="sync-btn" id="syncBtn" type="button" title="Experimente: clique para sincronizar"><svg class="i"><use href="#i-refresh"/></svg><span id="syncLabel">Sincronizar Data Center</span></button>
+              </div>
+              <div class="stats">
+                <div class="stat"><small>Clientes ativos</small><b>9</b></div>
+                <div class="stat"><small>XMLs armazenados</small><b id="xmlCount">18.967</b></div>
+                <div class="stat navy"><small>Sincronização SEFAZ</small><b><i class="dot" id="syncDot"></i><span id="syncState">Em dia</span></b><em id="syncWhen">Última: hoje às 12:00</em></div>
+                <div class="stat navy"><small>Suporte 48 99208 6832</small><b><i class="dot"></i>Online</b></div>
+              </div>
+              <div class="plan-row"><div><small>Plano</small><b>Ilimitado</b><em>Guarda as notas por 5 anos</em></div><div><b>XMLs sem limite por mês</b></div></div>
+              <div class="warn">⚠ 2 certificados vencendo em 30 dias <span>FERRAGEM EXEMPLO LTDA (vence em 12 dias) · TINTAS EXEMPLO LTDA (vence em 22 dias)</span><a>Atualizar certificados</a></div>
+              <div class="chart-card">
+                <div class="chart-head">
+                  <div><b>XMLs por mês</b><em>Últimos 12 meses, pelo mês de emissão das notas. Passe o mouse nas barras.</em></div>
+                  <div class="seg"><span class="on">Mês de emissão</span><span>Mês do download</span></div>
+                </div>
+                <div class="legend"><span><i class="c0"></i>NF-e</span><span><i class="c1"></i>NFC-e</span><span><i class="c2"></i>CT-e</span><span><i class="c3"></i>NFS-e</span></div>
+                <div class="chart" id="heroChart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="float-pill"><span class="live"></span>Robô em dia · 00h e 12h</div>
+      <div class="float-toast"><svg class="i"><use href="#i-alert"/></svg>Ferragem Exemplo: certificado vence em 12 dias</div>
+      <div class="float-sync" id="floatSync" role="status" aria-live="polite"><svg class="i" style="color:#34d399"><use href="#i-check"/></svg><span><b>+12 notas</b> baixadas da SEFAZ</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== PROVA ===================== -->
+<section class="proof" aria-label="Epiverso em números">
+  <div class="wrap proof-grid">
+    <div class="proof-item reveal"><b><span data-count="110">110</span> mil<span class="g">+</span></b><span>XMLs organizados no painel, prontos para consulta</span></div>
+    <div class="proof-item reveal d1"><b>4</b><span>modelos fiscais: NF-e, NFC-e, CT-e e NFS-e</span></div>
+    <div class="proof-item reveal d2"><b>2<span class="g">×</span></b><span>buscas por dia na SEFAZ, às 00h e às 12h, sem ninguém clicar</span></div>
+    <div class="proof-item reveal d3"><b>~3<span class="g">s</span></b><span>para gerar o ZIP do mês, com 5.496 XMLs de um cliente</span></div>
+  </div>
+</section>
+
+<!-- ===================== PROBLEMA ===================== -->
+<section class="section light" id="problema">
+  <div class="wrap two">
+    <div>
+      <span class="eyebrow reveal">A rotina manual</span>
+      <h2 class="h2 reveal d1" style="margin-top:18px">Cliente por cliente. <span class="dim">Portal por portal.</span></h2>
+      <ul class="xlist">
+        <li class="reveal"><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Entrar no portal da SEFAZ de cada cliente</li>
+        <li class="reveal d1"><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Baixar NF-e, NFC-e, CT-e e NFS-e em lugares diferentes</li>
+        <li class="reveal d2"><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Renomear e separar por cliente e por mês</li>
+        <li class="reveal d3"><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Conferir no olho o que ficou faltando</li>
+      </ul>
+      <div class="mult reveal">
+        <span class="xi no"><svg class="i"><use href="#i-clock"/></svg></span>
+        <div><small>TODO MÊS</small><b>Agora multiplique por 50 clientes.</b></div>
+      </div>
+    </div>
+    <div class="pain reveal d1">
+      <div class="glow"></div>
+      <span class="eyebrow">O problema</span>
+      <p class="pain-t">E quando falta uma nota, ela aparece no pior momento: <span class="red">o fechamento.</span></p>
+      <div class="pain-cards">
+        <div class="pc"><span class="xi"><svg class="i"><use href="#i-refresh"/></svg></span><b>Retrabalho</b><span>Refazer lançamento e apuração.</span></div>
+        <div class="pc"><span class="xi"><svg class="i"><use href="#i-alert"/></svg></span><b>Apuração errada</b><span>Imposto calculado a mais ou a menos.</span></div>
+        <div class="pc"><span class="xi"><svg class="i"><use href="#i-users"/></svg></span><b>Cliente insatisfeito</b><span>E a confiança no escritório cai.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROBÔ ===================== -->
+<section class="section dark grid-bg" id="robo">
+  <div class="glow g1"></div>
+  <div class="wrap" style="position:relative">
+    <div class="sec-head center">
+      <span class="eyebrow reveal">A solução</span>
+      <h2 class="h2 reveal d1">O robô busca tudo <span class="g">sozinho.</span></h2>
+      <p class="lead reveal d2">Duas vezes por dia, todos os dias, direto da SEFAZ. Emitidas e destinadas, dos quatro modelos. De manhã, o painel está pronto para conferir.</p>
+    </div>
+    <div class="clock-row">
+      <div class="clock reveal"><small><svg class="i"><use href="#i-clock"/></svg>Madrugada</small><b>00:00</b><span>Enquanto o escritório dorme</span></div>
+      <div class="clock reveal d1"><small><svg class="i"><use href="#i-clock"/></svg>Meio-dia</small><b>12:00</b><span>Para a tarde começar em dia</span></div>
+      <div class="clock next reveal d2"><small><span class="live"></span>&nbsp;Próxima busca <span id="nextAt"></span></small><b id="nextRun">em breve</b><span>Precisa antes? É só clicar em <em>Sincronizar</em> e o robô busca na hora.</span></div>
+    </div>
+    <div class="tags reveal">
+      <span class="chip">NF-e</span><span class="chip">NFC-e</span><span class="chip">CT-e</span><span class="chip">NFS-e</span><span class="chip on">Emitidas</span><span class="chip on">Destinadas</span>
+    </div>
+
+    <div class="robo-grid">
+      <div class="panel reveal">
+        <span class="eyebrow">Organização automática</span>
+        <h3 class="h3">Cada XML no lugar certo.</h3>
+        <p>Por cliente, fluxo, modelo, ano e mês. Do jeito que o contador procura.</p>
+        <div class="sheet">
+          <ul class="tree">
+            <li><span class="n root"><svg class="i"><use href="#i-building"/></svg>Padaria Aurora LTDA</span>
+              <ul>
+                <li><span class="n"><svg class="i"><use href="#i-folder"/></svg>Emitidas</span>
+                  <ul>
+                    <li><span class="n"><svg class="i"><use href="#i-folder"/></svg>NFC-e</span>
+                      <ul>
+                        <li><span class="n"><svg class="i"><use href="#i-folder"/></svg>2026</span>
+                          <ul><li><span class="leaf"><span class="n" style="color:inherit"><svg class="i"><use href="#i-file"/></svg>Setembro</span><span class="pill p-green">4.912 XMLs</span></span></li></ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li><span class="n"><svg class="i"><use href="#i-folder"/></svg>Destinadas</span>
+                  <ul><li><span class="n"><svg class="i"><use href="#i-folder"/></svg>NF-e · CT-e · NFS-e</span></li></ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel reveal d1">
+        <span class="eyebrow">Conferência</span>
+        <h3 class="h3">Canceladas e substituídas? <span class="g">Já vêm marcadas.</span></h3>
+        <p>E ficam fora da soma do mês automaticamente, nos relatórios e no faturamento.</p>
+        <div class="sheet" style="overflow-x:auto">
+          <table class="nt">
+            <thead><tr><th>Nota</th><th>Destinatário</th><th class="r hide-s">Valor</th><th class="r">Situação</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">4.812</td><td class="nm w">Mercado Bom Preço</td><td class="r mono hide-s">R$ 1.240,00</td><td class="r"><span class="pill p-ok">Autorizada</span></td></tr>
+              <tr><td class="mono">4.813</td><td class="nm w">Auto Peças Litoral</td><td class="r mono hide-s">R$ 386,90</td><td class="r"><span class="pill p-ok">Autorizada</span></td></tr>
+              <tr class="cx"><td class="mono">4.814</td><td class="nm w">Clínica Vida Sul</td><td class="r mono hide-s">R$ 2.100,00</td><td class="r"><span class="pill p-cx">Cancelada</span></td></tr>
+              <tr class="sb"><td class="mono">4.815</td><td class="nm w">Construtora Horizonte</td><td class="r mono hide-s">R$ 9.870,00</td><td class="r"><span class="pill p-sb">Substituída</span></td></tr>
+              <tr><td class="mono">4.816</td><td class="nm w">Farmácia Central</td><td class="r mono hide-s">R$ 512,40</td><td class="r"><span class="pill p-ok">Autorizada</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMO FUNCIONA ===================== -->
+<section class="section light" id="como-funciona">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow reveal">Como funciona</span>
+      <h2 class="h2 reveal d1">3 passos <span class="dim">e pronto.</span></h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><span class="num">01</span><h3 class="h3">Cadastre os clientes</h3><p>Cole os CNPJs, um por linha: a razão social vem sozinha. O painel guarda os certificados A1 com a senha criptografada.</p></div>
+      <div class="step reveal d1"><span class="num">02</span><h3 class="h3">O robô busca tudo</h3><p>Todos os dias, às 00h e às 12h. NF-e, NFC-e, CT-e e NFS-e, emitidas e destinadas, direto da SEFAZ.</p></div>
+      <div class="step reveal d2"><span class="num">03</span><h3 class="h3">Você confere e baixa</h3><p>PDF, Excel e o mês inteiro em ZIP. Pronto para conferir, lançar e enviar ao cliente.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TOUR ===================== -->
+<section class="section light" id="recursos" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow reveal">Por dentro do painel</span>
+      <h2 class="h2 reveal d1">Tudo o que o fiscal precisa, <span class="dim">sem abrir outro portal.</span></h2>
+    </div>
+    <div class="tour reveal">
+      <div class="tabs" role="tablist" aria-label="Recursos do painel">
+        <button class="tab" role="tab" id="t-xp" aria-controls="p-xp" aria-selected="true" type="button"><span class="ti"><svg class="i"><use href="#i-search"/></svg></span><span><b>Explorador</b><span>Qualquer nota em segundos, pelo número, nome, CNPJ ou chave.</span></span></button>
+        <button class="tab" role="tab" id="t-doc" aria-controls="p-doc" aria-selected="false" tabindex="-1" type="button"><span class="ti"><svg class="i"><use href="#i-file"/></svg></span><span><b>DANFE, DACTE e DANFSe</b><span>Com um clique, com marca de cancelada e o quadro de IBS/CBS.</span></span></button>
+        <button class="tab" role="tab" id="t-rep" aria-controls="p-rep" aria-selected="false" tabindex="-1" type="button"><span class="ti"><svg class="i"><use href="#i-download"/></svg></span><span><b>Relatórios e ZIP</b><span>O mês inteiro em PDF, Excel e ZIP. Pronto para enviar.</span></span></button>
+        <button class="tab" role="tab" id="t-emp" aria-controls="p-emp" aria-selected="false" tabindex="-1" type="button"><span class="ti"><svg class="i"><use href="#i-chart"/></svg></span><span><b>XMLs por empresa</b><span>Quantos XMLs cada cliente tem, mês a mês.</span></span></button>
+        <button class="tab" role="tab" id="t-cli" aria-controls="p-cli" aria-selected="false" tabindex="-1" type="button"><span class="ti"><svg class="i"><use href="#i-users"/></svg></span><span><b>Clientes e certificados</b><span>O CNPJ entra e o nome vem sozinho. Certificado vencendo? O painel avisa.</span></span></button>
+      </div>
+
+      <div class="stage">
+        <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url"><span><svg class="i"><use href="#i-lock"/></svg>notas.seudominio.com.br</span></span><span style="width:44px"></span></div>
+
+        <!-- Explorador -->
+        <div class="tp on" id="p-xp" role="tabpanel" aria-labelledby="t-xp" tabindex="0">
+          <div class="tp-h"><div><h4>Explorador de Arquivos</h4><p>Navegação segmentada com busca em tempo real. Experimente digitar.</p></div></div>
+          <div class="xp-crumbs">Clientes <i>›</i> PADARIA AURORA LTDA <i>›</i> Emitidas <i>›</i> NF-e <i>›</i> 2026 <i>›</i> <b>09</b></div>
+          <label class="search" id="xpSearch"><svg class="i"><use href="#i-search"/></svg><span class="sr">Pesquisar nota</span><input id="xpInput" type="search" autocomplete="off" placeholder="Pesquisar número, nome ou CNPJ…"><span class="res" id="xpRes">6 notas</span></label>
+          <div class="xp-table">
+            <table class="nt" id="xpTable">
+              <thead><tr><th>Nota</th><th>Destinatário</th><th class="hide-s">Data</th><th class="r">Valor</th><th class="r hide-s">Situação</th><th class="r">Ações</th></tr></thead>
+              <tbody>
+                <tr data-s="4816 farmácia central farmacia"><td class="mono">4.816</td><td class="w">Farmácia Central</td><td class="mono hide-s">30/09</td><td class="r mono">R$ 512,40</td><td class="r hide-s"><span class="pill p-ok">Autorizada</span></td><td class="r"><span class="act"><span class="pdf">PDF</span><span class="xml">XML</span></span></td></tr>
+                <tr data-s="4815 construtora horizonte"><td class="mono">4.815</td><td class="w">Construtora Horizonte</td><td class="mono hide-s">29/09</td><td class="r mono">R$ 9.870,00</td><td class="r hide-s"><span class="pill p-sb">Substituída</span></td><td class="r"><span class="act"><span class="pdf">PDF</span><span class="xml">XML</span></span></td></tr>
+                <tr data-s="4814 clínica vida sul clinica"><td class="mono">4.814</td><td class="w">Clínica Vida Sul</td><td class="mono hide-s">29/09</td><td class="r mono">R$ 2.100,00</td><td class="r hide-s"><span class="pill p-cx">Cancelada</span></td><td class="r"><span class="act"><span class="pdf">PDF</span><span class="xml">XML</span></span></td></tr>
+                <tr data-s="4813 auto peças litoral pecas"><td class="mono">4.813</td><td class="w">Auto Peças Litoral</td><td class="mono hide-s">28/09</td><td class="r mono">R$ 386,90</td><td class="r hide-s"><span class="pill p-ok">Autorizada</span></td><td class="r"><span class="act"><span class="pdf">PDF</span><span class="xml">XML</span></span></td></tr>
+                <tr data-s="4812 mercado bom preço preco"><td class="mono">4.812</td><td class="w">Mercado Bom Preço</td><td class="mono hide-s">28/09</td><td class="r mono">R$ 1.240,00</td><td class="r hide-s"><span class="pill p-ok">Autorizada</span></td><td class="r"><span class="act"><span class="pdf">PDF</span><span class="xml">XML</span></span></td></tr>
+                <tr data-s="4811 hotel exemplo ltda"><td class="mono">4.811</td><td class="w">Hotel Exemplo LTDA</td><td class="mono hide-s">27/09</td><td class="r mono">R$ 845,00</td><td class="r hide-s"><span class="pill p-ok">Autorizada</span></td><td class="r"><span class="act"><span class="pdf">PDF</span><span class="xml">XML</span></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Documentos -->
+        <div class="tp" id="p-doc" role="tabpanel" aria-labelledby="t-doc" tabindex="0">
+          <div class="tp-h"><div><h4>DANFE, DACTE e DANFSe com um clique</h4><p>Com marca d’água de cancelada, retenções nos campos certos e o quadro de IBS/CBS.</p></div></div>
+          <div class="docs">
+            <div class="doc"><div class="dh"><span>DANFE</span><span>NF-e</span></div><div class="ln"></div><div class="ln m"></div><div class="ln s"></div><div class="ln"></div><div class="ln m"></div><div class="ibs"><span>IBS/CBS</span><span>✓</span></div><div class="foot"><b>DANFE</b><span>NF-e e NFC-e</span></div></div>
+            <div class="doc"><div class="dh"><span>DACTE</span><span>CT-e</span></div><div class="ln"></div><div class="ln s"></div><div class="ln m"></div><div class="ln"></div><div class="ln s"></div><div class="ibs"><span>IBS/CBS</span><span>✓</span></div><div class="foot"><b>DACTE</b><span>CT-e</span></div></div>
+            <div class="doc"><div class="dh"><span>DANFE</span><span>NF-e</span></div><div class="ln"></div><div class="ln m"></div><div class="ln"></div><div class="ln s"></div><div class="ln m"></div><div class="ibs"><span>IBS/CBS</span><span>✓</span></div><span class="stamp">CANCELADA</span><div class="foot"><b>Nota 4.814</b><span>Marca d’água de cancelada</span></div></div>
+          </div>
+          <div class="quadro">
+            <div class="qh">IBS / CBS · REFORMA TRIBUTÁRIA</div>
+            <div class="qg">
+              <div><small>CST</small><b>000</b></div>
+              <div><small>cClassTrib</small><b>000001</b></div>
+              <div><small>Base de cálculo</small><b>R$ 1.250,00</b></div>
+              <div><small>Item</small><b>1</b></div>
+              <div><small>Alíq. IBS UF</small><b>0,10%</b></div>
+              <div><small>Valor IBS</small><b>R$ 1,25</b></div>
+              <div><small>Alíq. CBS</small><b>0,90%</b></div>
+              <div><small>Valor CBS</small><b>R$ 11,25</b></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Relatórios -->
+        <div class="tp" id="p-rep" role="tabpanel" aria-labelledby="t-rep" tabindex="0">
+          <div class="tp-h"><div><h4>O mês inteiro em PDF, Excel e ZIP</h4><p>Prontos para conferir, lançar e enviar ao cliente.</p></div></div>
+          <div class="reps">
+            <div class="rep"><span class="ri" style="background:#dc2626"><svg class="i"><use href="#i-file"/></svg></span><b>Resumo em PDF</b><span>Uma linha por nota, com cada imposto e as retenções.</span></div>
+            <div class="rep"><span class="ri" style="background:#059669"><svg class="i"><use href="#i-sheet"/></svg></span><b>Produtos em Excel</b><span>CST, cClassTrib, base, alíquota e valor por item, com fórmulas.</span></div>
+            <div class="rep"><span class="ri" style="background:#0a0a0a"><svg class="i"><use href="#i-download"/></svg></span><b>Lote do mês em ZIP</b><span>Todos os XMLs de uma vez, em segundos.</span></div>
+          </div>
+          <div class="zip" aria-live="polite">
+            <div class="zip-top"><span>Padaria Aurora · set/2026</span><em id="zipPct">0%</em></div>
+            <div class="zip-bar"><i id="zipBar"></i></div>
+            <div class="zip-bot"><span>4.912 XMLs</span><span id="zipName">xmls_2026-09.zip</span></div>
+          </div>
+        </div>
+
+        <!-- XMLs por empresa -->
+        <div class="tp" id="p-emp" role="tabpanel" aria-labelledby="t-emp" tabindex="0">
+          <div class="tp-h"><div><h4>XMLs por empresa</h4><p>Por mês de emissão ou de download, com gráfico e total geral.</p></div><span class="pill p-gr">Últimos 4 meses</span></div>
+          <div style="overflow-x:auto">
+            <table class="nt">
+              <thead><tr><th>Empresa</th><th class="r">Total</th><th class="r hide-s">Jun/26</th><th class="r hide-s">Jul/26</th><th class="r hide-s">Ago/26</th><th class="r">Set/26</th><th class="r">Tendência</th></tr></thead>
+              <tbody>
+                <tr><td><b>Padaria Aurora LTDA</b></td><td class="r mono"><b>18.432</b></td><td class="r mono hide-s">4.357</td><td class="r mono hide-s">4.455</td><td class="r mono hide-s">4.708</td><td class="r mono">4.912</td><td class="r"><span class="spark"><i style="height:62%"></i><i style="height:70%"></i><i style="height:84%"></i><i style="height:100%"></i></span></td></tr>
+                <tr><td><b>Mercado Bom Preço</b></td><td class="r mono"><b>8.264</b></td><td class="r mono hide-s">1.878</td><td class="r mono hide-s">1.998</td><td class="r mono hide-s">2.087</td><td class="r mono">2.301</td><td class="r"><span class="spark"><i style="height:60%"></i><i style="height:72%"></i><i style="height:80%"></i><i style="height:100%"></i></span></td></tr>
+                <tr><td><b>Auto Peças Litoral</b></td><td class="r mono"><b>5.917</b></td><td class="r mono hide-s">1.368</td><td class="r mono hide-s">1.433</td><td class="r mono hide-s">1.512</td><td class="r mono">1.604</td><td class="r"><span class="spark"><i style="height:64%"></i><i style="height:74%"></i><i style="height:86%"></i><i style="height:100%"></i></span></td></tr>
+                <tr><td><b>Ferragem Exemplo LTDA</b></td><td class="r mono"><b>1.863</b></td><td class="r mono hide-s">412</td><td class="r mono hide-s">448</td><td class="r mono hide-s">480</td><td class="r mono">523</td><td class="r"><span class="spark"><i style="height:66%"></i><i style="height:76%"></i><i style="height:86%"></i><i style="height:100%"></i></span></td></tr>
+                <tr><td><b>Clínica Exemplo LTDA</b></td><td class="r mono"><b>738</b></td><td class="r mono hide-s">171</td><td class="r mono hide-s">180</td><td class="r mono hide-s">189</td><td class="r mono">198</td><td class="r"><span class="spark"><i style="height:78%"></i><i style="height:84%"></i><i style="height:92%"></i><i style="height:100%"></i></span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Clientes -->
+        <div class="tp" id="p-cli" role="tabpanel" aria-labelledby="t-cli" tabindex="0">
+          <div class="tp-h"><div><h4>Gestão Estrutural</h4><p>Controle de credenciais, certificados A1 e alvos de extração.</p></div></div>
+          <div class="cli">
+            <div class="box">
+              <h5>Empresas Monitoradas</h5>
+              <p>Cole os CNPJs, um por linha. A razão social é buscada automaticamente.</p>
+              <div class="ta" id="cnpjBox"><span id="cnpjText"></span><span class="caret"></span></div>
+              <span class="btn btn-dark" id="cnpjBtn"><svg class="i"><use href="#i-plus"/></svg>Adicionar CNPJs</span>
+            </div>
+            <div class="box">
+              <h5>Cadastrados</h5>
+              <p>Validade do certificado de cada cliente, sempre à vista.</p>
+              <ul class="cl" id="cliList">
+                <li><div><b>Eletro Exemplo LTDA</b><small>certificado A1</small></div><span class="pill p-ok">Válido até 20/05/2027</span></li>
+                <li><div><b>Ferragem Exemplo LTDA</b><small>certificado A1</small></div><span class="pill p-at">Vence em 12 dias</span></li>
+                <li><div><b>Tintas Exemplo LTDA</b><small>certificado A1</small></div><span class="pill p-at">Vence em 22 dias</span></li>
+                <li><div><b>Padaria Aurora LTDA</b><small>certificado A1</small></div><span class="pill p-ok">Válido até 10/02/2027</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SIMPLES ===================== -->
+<section class="section dark grid-bg" id="simples">
+  <div class="glow g1"></div>
+  <div class="wrap two" style="position:relative;align-items:start">
+    <div>
+      <span class="eyebrow reveal">Simples Nacional</span>
+      <h2 class="h2 reveal d1" style="margin-top:18px">Seu cliente vai estourar o limite? <span class="g">Saiba antes.</span></h2>
+      <p class="lead reveal d2">O faturamento costuma ser somado quando já é tarde. O painel soma pelo CFOP de cada item, projeta o ano e mostra o mês em que o limite estoura, para cada cliente.</p>
+      <div class="nums">
+        <div class="numc reveal"><b>R$ 4,8 mi</b><span><strong>Limite do Simples</strong>Receita bruta no ano-calendário</span></div>
+        <div class="numc reveal d1"><b>R$ 3,6 mi</b><span><strong>Sublimite</strong>Acima dele, ICMS e ISS saem do DAS</span></div>
+        <div class="numc reveal d2"><b>R$ 81 mil</b><span><strong>Limite do MEI</strong>No ano de abertura, tudo proporcional</span></div>
+      </div>
+    </div>
+    <div class="lim reveal d1" id="limCard">
+      <div class="lim-h"><b>Faturamento × limite do Simples</b><span class="lim-legend"><span class="pill p-cx">Passou do limite</span><span class="pill p-at">Atenção</span><span class="pill p-ok">Dentro do limite</span></span></div>
+
+      <div class="lr">
+        <div class="lr-top"><b>Eletro Exemplo LTDA</b><span class="pill p-cx">Passou do limite</span></div>
+        <div class="lr-meta"><span>Faturado em 2026: <strong>R$ 5.040.000</strong></span><span class="t-red"><strong style="color:inherit">105%</strong> do limite</span></div>
+        <div class="track"><i class="fill f-red" style="--w:95.5%"></i><i class="mk" style="left:68.2%"></i><i class="mk" style="left:90.9%"></i></div>
+        <div class="lr-alert t-red">Passou o limite anual: exclusão do Simples a partir de janeiro.</div>
+      </div>
+
+      <div class="lr">
+        <div class="lr-top"><b>Ferragem Exemplo LTDA</b><span class="pill p-at">Atenção</span></div>
+        <div class="lr-meta"><span>Faturado: <strong>R$ 3.215.000</strong><span class="lg"> · Média/mês <strong>R$ 357 mil</strong></span></span><span>Projeção <strong>R$ 4,29 mi</strong></span></div>
+        <div class="track"><i class="proj" style="--w:81.3%"></i><i class="fill f-or" style="--w:60.9%"></i><i class="mk" style="left:68.2%"></i><i class="mk" style="left:90.9%"></i></div>
+        <div class="mk-l"><span style="left:68.2%"><span class="lg">Sublimite R$ 3,6 mi</span><span class="sh">3,6 mi</span></span><span style="left:90.9%"><span class="lg">Limite R$ 4,8 mi</span><span class="sh">4,8 mi</span></span></div>
+        <div class="lr-alert t-or">No ritmo atual, passa do sublimite em nov/2026.</div>
+      </div>
+
+      <div class="lr">
+        <div class="lr-top"><b>Tintas Exemplo LTDA</b><span class="pill p-ok">Dentro do limite</span></div>
+        <div class="lr-meta"><span>Faturado em 2026: <strong>R$ 960.000</strong></span><span class="t-gr"><strong style="color:inherit">20%</strong> do limite</span></div>
+        <div class="track"><i class="fill f-gr" style="--w:18.2%"></i><i class="mk" style="left:68.2%"></i><i class="mk" style="left:90.9%"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap rules" style="position:relative">
+    <div class="cfop reveal">
+      <div class="cfop-b in-s">
+        <small>Entra na soma</small>
+        <ul>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Vendas pelo CFOP (5101, 5102, 5405, 6102, 6108…)</li>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Serviços: NFS-e e CT-e emitidos</li>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Menos as devoluções de venda</li>
+        </ul>
+      </div>
+      <div class="cfop-b out-s">
+        <small>Fica de fora</small>
+        <ul>
+          <li><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Remessas, transferências e bonificações</li>
+          <li><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Notas canceladas e substituídas</li>
+        </ul>
+      </div>
+    </div>
+    <div class="reveal d1">
+      <div class="mini">
+        <div><span class="mi"><svg class="i"><use href="#i-building"/></svg></span><b>Matriz + filiais</b><span>Somadas pela raiz do CNPJ, como manda a lei.</span></div>
+        <div><span class="mi"><svg class="i"><use href="#i-file"/></svg></span><b>Regime da Receita</b><span>Simples, MEI ou normal, consultado na Receita.</span></div>
+        <div><span class="mi"><svg class="i"><use href="#i-calendar"/></svg></span><b>Ano de abertura</b><span>Limite proporcional aos meses de atividade.</span></div>
+        <div><span class="mi"><svg class="i"><use href="#i-chart"/></svg></span><b>Mês a mês</b><span>Vendas, serviços e devoluções separados.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REFORMA ===================== -->
+<section class="section light" id="reforma">
+  <div class="wrap two">
+    <div>
+      <span class="eyebrow reveal">Reforma tributária</span>
+      <h2 class="h2 reveal d1" style="margin-top:18px">IBS e CBS já estão <span class="dim">nas notas.</span></h2>
+      <p class="lead reveal d2">Em 2026, cada item da nota ganhou o grupo IBSCBS: CST, cClassTrib, base, alíquotas e valores. Na fase de teste, <b style="color:var(--ink)">CBS de 0,9%</b> e <b style="color:var(--ink)">IBS de 0,1%</b>. O Epiverso já lê tudo isso.</p>
+      <ul class="checks">
+        <li class="reveal"><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span><span><b>DANFE, DACTE e DANFSe</b> com o quadro de IBS/CBS</span></li>
+        <li class="reveal d1"><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span><span><b>Relatórios com uma coluna por imposto</b>, só os que existem no mês</span></li>
+        <li class="reveal d2"><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span><span><b>Excel com base, alíquota e valor por item</b>, com fórmulas de verdade</span></li>
+        <li class="reveal d3"><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span><span><b>NFS-e com cada retenção no campo certo</b> e o líquido conferido</span></li>
+      </ul>
+    </div>
+    <div class="ref-visual reveal d1">
+      <div class="code">
+        <div class="code-h"><span>nota.xml · item 1</span><span class="pill" style="background:rgba(16,185,129,.14);color:#34d399">Fase de teste 2026</span></div>
+<pre><span class="t">&lt;IBSCBS&gt;</span>
+  <span class="t">&lt;CST&gt;</span><span class="v">000</span><span class="t">&lt;/CST&gt;</span>
+  <span class="t">&lt;cClassTrib&gt;</span><span class="v">000001</span><span class="t">&lt;/cClassTrib&gt;</span>
+  <span class="t">&lt;gIBSCBS&gt;</span>
+    <span class="t">&lt;vBC&gt;</span><span class="v">1250.00</span><span class="t">&lt;/vBC&gt;</span>
+    <span class="t">&lt;pIBSUF&gt;</span><span class="v">0.1000</span><span class="t">&lt;/pIBSUF&gt;</span>
+    <span class="t">&lt;pCBS&gt;</span><span class="v">0.9000</span><span class="t">&lt;/pCBS&gt;</span>
+  <span class="t">&lt;/gIBSCBS&gt;</span>
+<span class="t">&lt;/IBSCBS&gt;</span></pre>
+      </div>
+      <div class="quadro">
+        <div class="qh">NO DANFE · IBS / CBS</div>
+        <div class="qg">
+          <div><small>Base</small><b>R$ 1.250,00</b></div>
+          <div><small>Valor IBS</small><b>R$ 1,25</b></div>
+          <div><small>Alíq. CBS</small><b>0,90%</b></div>
+          <div><small>Valor CBS</small><b>R$ 11,25</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap ref-row">
+    <div class="card-l reveal">
+      <span class="eyebrow">Relatórios</span>
+      <h3 class="h3">Uma coluna por imposto. Só as que existem no mês.</h3>
+      <p>Sem coluna vazia: se o mês não tem IPI, o IPI nem aparece.</p>
+      <div class="tax">
+        <table class="nt">
+          <thead><tr><th>Nota</th><th>Valor</th><th>ICMS</th><th class="hide-s">PIS</th><th class="hide-s">COFINS</th><th>IBS</th><th>CBS</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">1.203</td><td class="mono">1.250,00</td><td class="mono">150,00</td><td class="mono hide-s">8,25</td><td class="mono hide-s">38,00</td><td class="mono ib">1,25</td><td class="mono ib">11,25</td></tr>
+            <tr><td class="mono">1.204</td><td class="mono">386,90</td><td class="mono">46,43</td><td class="mono hide-s">2,55</td><td class="mono hide-s">11,76</td><td class="mono ib">0,39</td><td class="mono ib">3,48</td></tr>
+            <tr><td class="mono">1.205</td><td class="mono">9.870,00</td><td class="mono">1.184,40</td><td class="mono hide-s">65,14</td><td class="mono hide-s">300,05</td><td class="mono ib">9,87</td><td class="mono ib">88,83</td></tr>
+            <tr><td class="mono">1.206</td><td class="mono">512,40</td><td class="mono">61,49</td><td class="mono hide-s">3,38</td><td class="mono hide-s">15,58</td><td class="mono ib">0,51</td><td class="mono ib">4,61</td></tr>
+            <tr class="tot"><td>Total</td><td class="mono">12.019,30</td><td class="mono">1.442,32</td><td class="mono hide-s">79,32</td><td class="mono hide-s">365,39</td><td class="mono ib">12,02</td><td class="mono ib">108,17</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card-d reveal d1">
+      <span class="eyebrow">NFS-e</span>
+      <h3 class="h3">Cada retenção no campo certo.</h3>
+      <div class="ret">
+        <div><span>ISS retido</span><span>R$ 360,00</span></div>
+        <div><span>INSS (CP)</span><span>R$ 660,00</span></div>
+        <div><span>IRRF</span><span>R$ 180,00</span></div>
+        <div><span>CSLL</span><span>R$ 120,00</span></div>
+        <div><span>PIS/COFINS retidos</span><span>R$ 390,00</span></div>
+        <div class="liq"><span>Valor líquido</span><span>R$ 10.290,00</span></div>
+      </div>
+      <p>Retido e não retido separados, e o líquido conferido nota a nota.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SISTEMA DE VERDADE ===================== -->
+<section class="section dark grid-bg" id="sistema">
+  <div class="glow g1"></div>
+  <div class="wrap" style="position:relative">
+    <div class="sec-head center">
+      <span class="eyebrow reveal">O sistema de verdade</span>
+      <h2 class="h2 reveal d1">A mesma tela que o <span class="g">seu escritório recebe.</span></h2>
+      <p class="lead reveal d2">Telas reais do Painel Fiscal, gravadas numa cópia de demonstração com empresas e notas fictícias.</p>
+    </div>
+    <div class="gal">
+      <figure class="shot reveal"><div class="frame"><img src="assets/img/tela-visao-geral.webp" width="1010" height="765" loading="lazy" decoding="async" alt="Monitor com a Visão Geral do Painel Fiscal: clientes ativos, XMLs armazenados, sincronização SEFAZ em dia e gráfico de XMLs por mês"></div><figcaption><b>Visão geral</b><span>Todos os clientes, com o robô em dia.</span></figcaption></figure>
+      <figure class="shot reveal d1"><div class="frame"><img src="assets/img/tela-simples.webp" width="1060" height="660" loading="lazy" decoding="async" alt="Notebook com a tela de faturamento comparado ao limite do Simples, com barras de projeção e alertas por cliente"></div><figcaption><b>Faturamento × limite do Simples</b><span>Com projeção do ano e alerta antes de estourar.</span></figcaption></figure>
+      <figure class="shot reveal"><div class="frame"><img src="assets/img/tela-explorador.webp" width="1035" height="740" loading="lazy" decoding="async" alt="Monitor com o Explorador de Arquivos listando notas de um cliente e um DANFE aberto ao lado"></div><figcaption><b>Explorador de Arquivos</b><span>Qualquer nota em segundos, com o PDF na hora.</span></figcaption></figure>
+      <figure class="shot reveal d1"><div class="frame"><img src="assets/img/tela-clientes.webp" width="1060" height="660" loading="lazy" decoding="async" alt="Notebook com a tela de clientes e certificados e um aviso de certificado que vence em 12 dias"></div><figcaption><b>Clientes e certificados</b><span>Certificado vencendo? O painel avisa.</span></figcaption></figure>
+    </div>
+    <div class="browser-note reveal">
+      <span><svg class="i"><use href="#i-monitor"/></svg>Roda no navegador</span>
+      <span><svg class="i"><use href="#i-zap"/></svg>Ninguém precisa instalar nada</span>
+      <span><svg class="i"><use href="#i-lock"/></svg>No endereço do seu escritório</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ANTES × DEPOIS ===================== -->
+<section class="section light" id="antes-depois">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="eyebrow reveal">Antes × depois</span>
+      <h2 class="h2 reveal d1">O mesmo mês. <span class="g">Dois escritórios.</span></h2>
+      <p class="lead reveal d2">Em qual deles você trabalha?</p>
+    </div>
+    <div class="vs">
+      <div class="vs-c vs-no reveal">
+        <small>Sem Epiverso</small>
+        <ul>
+          <li><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Portal da SEFAZ, cliente por cliente</li>
+          <li><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Pastas e planilhas feitas à mão</li>
+          <li><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Cancelamento descoberto na apuração</li>
+          <li><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Limite do Simples descoberto no susto</li>
+          <li><span class="xi no"><svg class="i"><use href="#i-x"/></svg></span>Fechamento que vira a noite</li>
+        </ul>
+      </div>
+      <div class="vs-c vs-yes reveal d1">
+        <small>Com Epiverso</small>
+        <ul>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Robô busca tudo às 00h e às 12h</li>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Organizado por cliente, modelo e mês</li>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Canceladas marcadas automaticamente</li>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Alerta antes de estourar o limite</li>
+          <li><span class="xi yes"><svg class="i"><use href="#i-check"/></svg></span>Relatórios em PDF e Excel em segundos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SEGURANÇA ===================== -->
+<section class="section dark grid-bg" id="seguranca">
+  <div class="wrap two" style="position:relative">
+    <div>
+      <span class="eyebrow reveal">Segurança</span>
+      <h2 class="h2 reveal d1" style="margin-top:18px">Dado fiscal exige segurança <span class="g">de verdade.</span></h2>
+      <p class="lead reveal d2">Certificado digital, XML de cliente e faturamento não podem ficar em pasta compartilhada nem em planilha no e-mail. Confiança também é técnica.</p>
+      <ul class="sec-list">
+        <li class="reveal"><span class="si"><svg class="i"><use href="#i-lock"/></svg></span>Conexão criptografada (HTTPS com TLS 1.2 e 1.3)</li>
+        <li class="reveal d1"><span class="si"><svg class="i"><use href="#i-key"/></svg></span>Senhas dos certificados A1 guardadas criptografadas</li>
+        <li class="reveal d2"><span class="si"><svg class="i"><use href="#i-ban"/></svg></span>Bloqueio automático de tentativas de invasão</li>
+        <li class="reveal d3"><span class="si"><svg class="i"><use href="#i-clock"/></svg></span>Login protegido contra força bruta e sessões que expiram</li>
+        <li class="reveal"><span class="si"><svg class="i"><use href="#i-server"/></svg></span>Firewall: só o essencial exposto na internet</li>
+        <li class="reveal d1"><span class="si"><svg class="i"><use href="#i-eye"/></svg></span>XMLs e certificados acessíveis só pelo painel, com login</li>
+      </ul>
+    </div>
+    <div class="shield reveal d1" aria-hidden="true">
+      <span class="ring"></span><span class="ring r2"></span><span class="ring r3"></span><span class="ring pulse"></span>
+      <div class="core"><svg class="i"><use href="#i-shield"/></svg></div>
+      <span class="tag t1"><b>TLS</b> 1.2 · 1.3</span>
+      <span class="tag t2">certificado A1 <b>criptografado</b></span>
+      <span class="tag t3">tentativas <b>bloqueadas</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PLANOS ===================== -->
+<section class="section light" id="planos">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="eyebrow reveal">Planos</span>
+      <h2 class="h2 reveal d1">Um plano para cada <span class="dim">tamanho de escritório.</span></h2>
+      <p class="lead reveal d2">Todos com o painel completo, relatórios, PDFs e segurança.</p>
+    </div>
+    <div class="plans">
+      <div class="plan reveal">
+        <small>Plano</small>
+        <div class="big">15 mil</div>
+        <div class="per">XMLs por mês</div>
+        <ul>
+          <li><svg class="i"><use href="#i-archive"/></svg>Guarda as notas por 1 ano</li>
+          <li><svg class="i"><use href="#i-zap"/></svg>Robô às 00h e às 12h</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Painel completo</li>
+        </ul>
+        <a class="btn btn-line" data-wa="Olá! Quero saber os valores do plano 15 mil XMLs/mês do Painel Fiscal Epiverso." href="https://wa.me/5548992086832">Consultar valores</a>
+      </div>
+      <div class="plan reveal d1">
+        <small>Plano</small>
+        <div class="big">25 mil</div>
+        <div class="per">XMLs por mês</div>
+        <ul>
+          <li><svg class="i"><use href="#i-archive"/></svg>Guarda as notas por 3 anos</li>
+          <li><svg class="i"><use href="#i-zap"/></svg>Robô às 00h e às 12h</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Painel completo</li>
+        </ul>
+        <a class="btn btn-line" data-wa="Olá! Quero saber os valores do plano 25 mil XMLs/mês do Painel Fiscal Epiverso." href="https://wa.me/5548992086832">Consultar valores</a>
+      </div>
+      <div class="plan top reveal d2">
+        <span class="badge">Mais completo</span>
+        <small>Plano</small>
+        <div class="big">Ilimitado</div>
+        <div class="per">XMLs sem limite por mês</div>
+        <ul>
+          <li><svg class="i"><use href="#i-archive"/></svg>Guarda as notas por 5 anos</li>
+          <li><svg class="i"><use href="#i-zap"/></svg>Robô às 00h e às 12h</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Painel completo</li>
+        </ul>
+        <a class="btn btn-primary" data-wa="Olá! Quero saber os valores do plano Ilimitado do Painel Fiscal Epiverso." href="https://wa.me/5548992086832">Consultar valores <svg class="i"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+    <p class="plans-note reveal">O valor depende do volume de XMLs por mês dos seus clientes. Chame no WhatsApp que a gente passa certinho.</p>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="section light" id="duvidas" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="eyebrow reveal">Dúvidas</span>
+      <h2 class="h2 reveal d1">Perguntas frequentes</h2>
+    </div>
+    <div class="faq reveal">
+      <details open><summary>Preciso instalar alguma coisa?<span class="pm"></span></summary><p>Não. O painel roda no navegador, no endereço do seu escritório. Ninguém precisa instalar nada no computador.</p></details>
+      <details><summary>Quais documentos o robô busca?<span class="pm"></span></summary><p>NF-e, NFC-e, CT-e e NFS-e, emitidas e destinadas, direto da SEFAZ. Cada XML vai para a pasta certa: cliente, fluxo, modelo, ano e mês.</p></details>
+      <details><summary>Com que frequência as notas são baixadas?<span class="pm"></span></summary><p>Duas vezes por dia, todos os dias: às 00h e às 12h. Se precisar antes, é só clicar em “Sincronizar” e o robô busca na hora.</p></details>
+      <details><summary>As notas canceladas atrapalham a soma do mês?<span class="pm"></span></summary><p>Não. Canceladas e substituídas já vêm marcadas e ficam fora da soma do mês, dos relatórios e do faturamento do Simples.</p></details>
+      <details><summary>O painel já lê IBS e CBS?<span class="pm"></span></summary><p>Sim. DANFE, DACTE e DANFSe saem com o quadro de IBS/CBS, os relatórios ganham uma coluna por imposto e o Excel traz CST, cClassTrib, base, alíquota e valor por item.</p></details>
+      <details><summary>Para quem é o Epiverso?<span class="pm"></span></summary><p>Para escritórios contábeis com muitos clientes e muito volume, inclusive clientes com milhares de cupons de NFC-e por mês, que querem o fechamento pronto antes de começar o mês.</p></details>
+      <details><summary>Meus dados e os dos meus clientes ficam seguros?<span class="pm"></span></summary><p>Sim. Conexão HTTPS com TLS 1.2 e 1.3, senhas dos certificados A1 criptografadas, bloqueio automático de tentativas de invasão, sessões que expiram e XMLs acessíveis só pelo painel, com login.</p></details>
+      <details><summary>Quanto custa?<span class="pm"></span></summary><p>Depende do volume de XMLs por mês dos seus clientes. São três planos (15 mil, 25 mil ou ilimitado). Chame no WhatsApp que a gente passa o valor certinho.</p></details>
+      <details><summary>Como funciona a demonstração?<span class="pm"></span></summary><p>É ao vivo e rápida, de uns 15 minutos: você vê o robô, o explorador, os relatórios e o controle do Simples funcionando.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta dark grid-bg" id="demonstracao">
+  <div class="glow g1"></div>
+  <div class="wrap" style="position:relative">
+    <div class="cta-mark reveal" aria-hidden="true"><i></i><i></i><i></i></div>
+    <span class="eyebrow reveal">Demonstração</span>
+    <h2 class="h2 reveal d1">Veja o painel com os <span class="g">seus clientes.</span></h2>
+    <p class="lead reveal d2">Agende uma demonstração: em poucos minutos você vê o robô, o explorador, os relatórios e o controle do Simples.</p>
+    <div class="hero-ctas reveal d3">
+      <a class="btn btn-primary" data-wa href="https://wa.me/5548992086832">Agendar demonstração <svg class="i"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="cta-phone reveal"><svg class="i"><use href="#i-phone"/></svg>WhatsApp <a data-wa href="https://wa.me/5548992086832">(48) 99208-6832</a></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-in">
+      <div>
+        <a href="#topo" class="logo" aria-label="Epiverso, voltar ao início"><svg viewBox="0 0 131 20" aria-hidden="true"><use href="#logo"/></svg></a>
+        <p>Painel fiscal para escritórios contábeis. O robô baixa, organiza e confere os XMLs dos seus clientes, todos os dias.</p>
+      </div>
+      <nav aria-label="Rodapé">
+        <a href="#robo">Robô</a><a href="#simples">Simples Nacional</a>
+        <a href="#recursos">Recursos</a><a href="#reforma">IBS/CBS</a>
+        <a href="#seguranca">Segurança</a><a href="#planos">Planos</a>
+        <a href="#duvidas">Dúvidas</a><a data-wa href="https://wa.me/5548992086832">WhatsApp</a>
+      </nav>
+    </div>
+    <div class="foot-b">
+      <span>© <span id="year">2026</span> Epiverso · Painel Fiscal. As empresas mostradas nas telas são fictícias.</span>
+      <span class="mono">NF-e · NFC-e · CT-e · NFS-e · IBS/CBS</span>
+    </div>
+  </div>
+</footer>
+
+<a class="fab" id="fab" data-wa href="https://wa.me/5548992086832" aria-label="Falar no WhatsApp"><svg class="i"><use href="#i-chat"/></svg><span>Falar no WhatsApp</span></a>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fmt = n => n.toLocaleString('pt-BR');
+
+  /* WhatsApp: todos os botões com data-wa */
+  const WA = '5548992086832';
+  const DEFAULT_MSG = 'Olá! Quero agendar uma demonstração do Painel Fiscal Epiverso.';
+  $$('[data-wa]').forEach(a => {
+    a.href = `https://wa.me/${WA}?text=${encodeURIComponent(a.dataset.wa || DEFAULT_MSG)}`;
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+
+  /* navegação */
+  const nav = $('#nav'), menuBtn = $('#menuBtn'), fab = $('#fab');
+  const onScroll = () => {
+    nav.classList.toggle('scrolled', scrollY > 10);
+    fab.classList.toggle('show', scrollY > innerHeight * 0.9);
+  };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  menuBtn.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+    menuBtn.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  });
+  $$('#mnav a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', false); }));
+
+  /* entrada suave */
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    io.unobserve(e.target);
+  }), { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  $$('.reveal').forEach(el => io.observe(el));
+
+  /* gráfico do hero */
+  const months = ['out','nov','dez','jan','fev','mar','abr','mai','jun','jul','ago','set'];
+  const totals = [1433,1406,1537,1482,1570,1564,1542,1621,1557,1666,1726,1863];
+  const chart = $('#heroChart');
+  chart.innerHTML = totals.map((t, i) => {
+    const nfe = Math.round(t * (0.40 + (i % 3) * 0.01)), cte = Math.round(t * 0.07), nfse = Math.round(t * (0.08 - (i % 2) * 0.01));
+    const nfce = t - nfe - cte - nfse;
+    const parts = [nfe, nfce, cte, nfse];
+    return `<div class="bar" style="--d:${i * 55}ms;--h:${(t / 2000 * 100).toFixed(1)}%">
+      <div class="col"><span class="v">${fmt(t)}</span><div class="stack">${parts.map((p, k) => `<i class="c${k}" style="height:${(p / t * 100).toFixed(2)}%"></i>`).join('')}</div></div>
+      <span class="m">${months[i]}</span>
+      <div class="tip"><b>${months[i]}/${i < 3 ? '25' : '26'} · ${fmt(t)} XMLs</b><span><em>NF-e</em>${fmt(nfe)}</span><span><em>NFC-e</em>${fmt(nfce)}</span><span><em>CT-e</em>${fmt(cte)}</span><span><em>NFS-e</em>${fmt(nfse)}</span></div>
+    </div>`;
+  }).join('');
+  $$('.tip em', chart).forEach(e => e.style.fontStyle = 'normal');
+  const chartIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { chart.classList.add('in'); chartIO.disconnect(); } }), { threshold: 0.3 });
+  chartIO.observe(chart);
+
+  /* botão "Sincronizar" do mock */
+  let xmls = 18967, busy = false;
+  const syncBtn = $('#syncBtn'), syncLabel = $('#syncLabel'), syncState = $('#syncState'), syncDot = $('#syncDot'), syncWhen = $('#syncWhen'), xmlCount = $('#xmlCount'), floatSync = $('#floatSync');
+  const animateNumber = (el, from, to, dur = 900) => {
+    if (reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const step = t => { const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(Math.round(from + (to - from) * e)); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+  syncBtn.addEventListener('click', () => {
+    if (busy) return; busy = true;
+    syncBtn.classList.add('busy'); syncLabel.textContent = 'Sincronizando…';
+    syncState.textContent = 'Sincronizando'; syncDot.classList.add('busy');
+    floatSync.classList.remove('show');
+    setTimeout(() => {
+      const novas = 12;
+      animateNumber(xmlCount, xmls, xmls + novas); xmls += novas;
+      syncBtn.classList.remove('busy'); syncLabel.textContent = 'Sincronizar Data Center';
+      syncState.textContent = 'Em dia'; syncDot.classList.remove('busy');
+      const now = new Date();
+      syncWhen.textContent = `Última: hoje às ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      void floatSync.offsetWidth; floatSync.classList.add('show');
+      clearTimeout(floatSync._t); floatSync._t = setTimeout(() => floatSync.classList.remove('show'), 4000);
+      busy = false;
+    }, 1800);
+  });
+
+  /* perspectiva do hero ao rolar */
+  const tilt = $('#tilt');
+  if (!reduce && matchMedia('(min-width: 900px)').matches) {
+    const upd = () => {
+      const p = Math.min(1, Math.max(0, scrollY / (innerHeight * 0.7)));
+      tilt.style.setProperty('--rx', `${(1 - p) * 12}deg`);
+      tilt.style.setProperty('--sc', (0.95 + p * 0.05).toFixed(3));
+    };
+    addEventListener('scroll', upd, { passive: true }); upd();
+  }
+
+  /* contadores */
+  const countIO = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, end = +el.dataset.count; countIO.unobserve(el);
+    animateNumber(el, 0, end, 1400);
+  }), { threshold: 0.6 });
+  $$('[data-count]').forEach(el => countIO.observe(el));
+
+  /* próxima busca do robô (horário de Brasília) */
+  const nextRun = $('#nextRun'), nextAt = $('#nextAt');
+  const tickRun = () => {
+    try {
+      const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+      const get = t => +parts.find(p => p.type === t).value;
+      const secs = get('hour') * 3600 + get('minute') * 60 + get('second');
+      const target = secs < 43200 ? 43200 : 86400;
+      const d = target - secs, h = Math.floor(d / 3600), m = Math.floor((d % 3600) / 60);
+      nextRun.textContent = h ? `em ${h}h ${String(m).padStart(2, '0')}min` : `em ${m} min`;
+      nextAt.textContent = `· ${target === 43200 ? '12:00' : '00:00'}`;
+    } catch (_) { nextRun.textContent = '00h e 12h'; }
+  };
+  tickRun(); setInterval(tickRun, 30000);
+
+  /* abas do tour */
+  const tabs = $$('.tab'), panels = $$('.tp');
+  const select = (tab, focus) => {
+    tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+    panels.forEach(p => p.classList.toggle('on', p.id === tab.getAttribute('aria-controls')));
+    if (focus) tab.focus();
+    if (matchMedia('(max-width: 1000px)').matches) tab.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduce ? 'auto' : 'smooth' });
+    onShow(tab.getAttribute('aria-controls'));
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', e => {
+      const dir = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (dir) { e.preventDefault(); select(tabs[(i + dir + tabs.length) % tabs.length], true); }
+      if (e.key === 'Home') { e.preventDefault(); select(tabs[0], true); }
+      if (e.key === 'End') { e.preventDefault(); select(tabs[tabs.length - 1], true); }
+    });
+  });
+
+  /* explorador: busca de verdade + demonstração digitando */
+  const xpInput = $('#xpInput'), xpRes = $('#xpRes'), xpSearch = $('#xpSearch'), rows = $$('#xpTable tbody tr');
+  let userTyped = false, typeTimer;
+  const filter = v => {
+    const q = v.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.\-/]/g, '').trim();
+    let c = 0;
+    rows.forEach(r => {
+      const hay = r.dataset.s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+      const show = !q || hay.includes(q);
+      r.hidden = !show; r.classList.toggle('hit', !!q && show);
+      if (show) c++;
+    });
+    xpRes.textContent = q ? `${c} ${c === 1 ? 'resultado' : 'resultados'}` : `${rows.length} notas`;
+  };
+  xpInput.addEventListener('input', () => { userTyped = true; clearInterval(typeTimer); xpSearch.classList.remove('typing'); filter(xpInput.value); });
+  xpInput.addEventListener('focus', () => { if (!userTyped) { clearInterval(typeTimer); xpSearch.classList.remove('typing'); } });
+  const typeDemo = () => {
+    if (userTyped) return;
+    clearInterval(typeTimer); xpInput.value = ''; filter('');
+    if (reduce) { xpInput.value = '4812'; filter('4812'); return; }
+    const text = '4812'; let i = 0;
+    setTimeout(() => {
+      if (userTyped) return;
+      xpSearch.classList.add('typing');
+      typeTimer = setInterval(() => {
+        xpInput.value = text.slice(0, ++i); filter(xpInput.value);
+        if (i >= text.length) { clearInterval(typeTimer); setTimeout(() => xpSearch.classList.remove('typing'), 900); }
+      }, 220);
+    }, 600);
+  };
+
+  /* ZIP do mês */
+  const zipBar = $('#zipBar'), zipPct = $('#zipPct'), zipName = $('#zipName');
+  let zipRAF;
+  const zipDemo = () => {
+    cancelAnimationFrame(zipRAF);
+    const dur = 3000, t0 = performance.now();
+    zipName.textContent = 'Gerando lote…'; zipName.className = '';
+    const step = t => {
+      const p = reduce ? 1 : Math.min(1, (t - t0) / dur);
+      zipBar.style.width = `${p * 100}%`; zipPct.textContent = `${Math.round(p * 100)}%`;
+      if (p < 1) zipRAF = requestAnimationFrame(step);
+      else { zipName.textContent = '✓ xmls_2026-09.zip · download concluído'; zipName.className = 'done'; }
+    };
+    zipRAF = requestAnimationFrame(step);
+  };
+
+  /* clientes: CNPJ digitado e nome buscado */
+  const cnpjText = $('#cnpjText'), cliList = $('#cliList');
+  let cnpjTimer, cnpjDone = false;
+  const cnpjDemo = () => {
+    if (cnpjDone) return;
+    const text = '12.345.678/0001-90';
+    let i = 0; clearInterval(cnpjTimer); cnpjText.textContent = '';
+    cnpjTimer = setInterval(() => {
+      cnpjText.textContent = text.slice(0, ++i);
+      if (i >= text.length) {
+        clearInterval(cnpjTimer); cnpjDone = true;
+        setTimeout(() => {
+          cnpjText.textContent = '';
+          const li = document.createElement('li'); li.className = 'new';
+          li.innerHTML = '<div><b>Café Exemplo LTDA</b><small>12.345.678/0001-90 · nome buscado automaticamente</small></div><span class="pill p-green">Novo</span>';
+          cliList.prepend(li);
+        }, 700);
+      }
+    }, reduce ? 0 : 70);
+  };
+
+  const onShow = id => {
+    if (id === 'p-xp') typeDemo();
+    if (id === 'p-rep') zipDemo();
+    if (id === 'p-cli') cnpjDemo();
+  };
+  const tourIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { typeDemo(); tourIO.disconnect(); } }), { threshold: 0.4 });
+  tourIO.observe($('.stage'));
+
+  $('#year').textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
