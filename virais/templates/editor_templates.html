@@ -114,7 +114,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
         <button class="btn" id="reset">Voltar ao padrão</button>
       </div>
       <div id="status" role="status"></div>
-      <p class="tip">Vídeo: o editor grava o post enquanto o meme toca, com o som original dele. O som em alta você coloca no próprio TikTok ou Instagram.</p>
+      <p class="tip">Vídeo: o editor grava o post enquanto o meme toca e o arquivo sai com o som original do meme. Durante a gravação você não ouve nada, é normal. O som em alta você coloca no próprio TikTok ou Instagram.</p>
     </fieldset>
   </aside>
 </div>
@@ -356,7 +356,7 @@ $('png').onclick=()=>{render();cv.toBlob(b=>b&&save(b,fname('png')),'image/png')
 let audioCtx=null,audioSrc=null,audioDest=null;
 $('vid').onclick=async()=>{
   const v=st.media;if(!v||v.tagName!=='VIDEO')return;
-  const types=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+  const types=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1.4D401F,mp4a.40.2','video/mp4;codecs=avc1,opus','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
   const mime=types.find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t));
   if(!mime){status('Este navegador não grava vídeo. Use o Chrome ou o Edge no computador.');return;}
   const ext=mime.startsWith('video/mp4')?'mp4':'webm';
