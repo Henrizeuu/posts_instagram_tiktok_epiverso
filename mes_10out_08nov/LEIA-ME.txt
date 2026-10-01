@@ -1,0 +1,27 @@
+EPIVERSO · CONTEÚDO DE 1 MÊS · 10/10 a 08/11/2026
+===================================================
+
+O QUE TEM AQUI
+  tiktok/          90 posts (3 por dia). Pasta = data_hora_tema.
+                   Vídeo: video.mp4 + capa.jpg + legenda.txt
+                   Carrossel de fotos: 01.jpg, 02.jpg... + legenda.txt
+  instagram/       30 posts (1 por dia). Pasta = data_formato_tema.
+                   Carrossel: 01.jpg... · Estático: post.jpg · Reels: video.mp4 + capa.jpg
+  tiktok_perfil/   foto de perfil do TikTok (e uma alternativa)
+  CALENDARIO.csv   a agenda inteira (abre no Excel / Google Sheets)
+  ESTRATEGIA_MES.md  o porquê de cada série, horários, como postar, licenças e conectores
+  _dados/          roteiros originais dos 90 TikToks (incluindo a versão para a equipe gravar)
+  _producao/       scripts usados para montar os vídeos (só para referência)
+
+ANTES DE POSTAR
+  1. Ouça as narrações (Reels do IG e os "Reforma em 30 s", "Glossário" e "Departamento pessoal" do TikTok).
+     Algumas vozes foram geradas no vidIQ e podem ter sotaque. Se não gostar, grave por cima com a sua voz:
+     o texto está no legenda.txt.
+  2. Adicione a música no próprio app (TikTok: Biblioteca Comercial; Instagram: biblioteca de áudio).
+  3. Confira prazos e regras com a fonte oficial na semana do post (principalmente o feriado de 20/11).
+  4. Nada aqui usa dado de cliente real. Telas são de demonstração com empresas fictícias.
+
+O QUE NÃO É IA
+  As pessoas nos vídeos e fotos são filmagens reais do Adobe Stock (gratuitas, licenciadas na sua conta Adobe).
+  Por isso não precisa do rótulo "gerado por IA". Não use esses clipes como se fossem clientes ou funcionários
+  dando depoimento.
