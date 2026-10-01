@@ -1,0 +1,10 @@
+# Dados reais, senhas e histórico ficam só no seu computador (vale também para cópias como email_joao/)
+leads*.csv
+!leads_exemplo.csv
+**/config.ini
+**/estado_email.json
+**/envios.csv
+**/descadastrados.txt
+**/*.tmp
+**/*.log
+__pycache__/

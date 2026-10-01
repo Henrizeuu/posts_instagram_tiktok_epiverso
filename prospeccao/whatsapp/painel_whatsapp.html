@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prospecção WhatsApp · Epiverso</title>
+<style>
+  :root {
+    --bg: #f6f7f6; --card: #ffffff; --texto: #111312; --suave: #5d6661; --borda: #dfe3e0;
+    --verde: #0f9d58; --verde-fundo: #e7f6ee; --alerta: #b45309; --alerta-fundo: #fff4e0;
+    --perigo: #b91c1c; --perigo-fundo: #fdecec; --mono: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e100f; --card: #171a19; --texto: #eef1ef; --suave: #9aa39e; --borda: #2a2f2c;
+      --verde: #34c77b; --verde-fundo: #12291d; --alerta: #f0a94a; --alerta-fundo: #2c2112;
+      --perigo: #f27272; --perigo-fundo: #2e1515;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--texto); font: 15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { background: #0b0c0b; color: #fff; padding: 14px 16px; }
+  header .topo { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  header h1 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: .2px; display: flex; align-items: center; gap: 10px; }
+  header h1 .barras { display: inline-flex; gap: 3px; align-items: flex-end; }
+  header h1 .barras i { display: block; width: 4px; background: #34c77b; border-radius: 1px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 12.5px; padding: 4px 10px; border-radius: 99px; background: #1d211f; color: #cfd6d2; white-space: nowrap; }
+  .chip b { color: #fff; }
+  nav { max-width: 1100px; margin: 0 auto; display: flex; gap: 4px; padding: 10px 16px 0; overflow-x: auto; }
+  nav button { border: 0; background: transparent; color: var(--suave); padding: 8px 12px; border-radius: 8px 8px 0 0; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
+  nav button.ativo { color: var(--texto); border-bottom-color: var(--verde); }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .aba { display: none; } .aba.ativo { display: block; }
+  .card { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .card h2 { margin: 0 0 4px; font-size: 16px; } .card h3 { margin: 14px 0 6px; font-size: 14px; }
+  .suave { color: var(--suave); } .peq { font-size: 13px; } .mono { font-family: var(--mono); font-size: 13px; }
+  .aviso { border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-size: 14px; background: var(--alerta-fundo); color: var(--alerta); }
+  .aviso.ok { background: var(--verde-fundo); color: var(--verde); }
+  .aviso.ruim { background: var(--perigo-fundo); color: var(--perigo); }
+  .linha { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .entre { justify-content: space-between; }
+  button.b, a.b { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--borda); background: var(--card); color: var(--texto); padding: 8px 12px; border-radius: 9px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+  button.b:hover, a.b:hover { border-color: var(--suave); }
+  .b.prim { background: var(--verde); border-color: var(--verde); color: #fff; }
+  .b.prim:hover { filter: brightness(1.05); }
+  .b.perigo { color: var(--perigo); }
+  .b:disabled, .b.desab { opacity: .45; cursor: not-allowed; pointer-events: none; }
+  .b.mini { padding: 4px 8px; font-size: 12.5px; }
+  textarea, input, select { font: inherit; color: var(--texto); background: var(--bg); border: 1px solid var(--borda); border-radius: 9px; padding: 8px 10px; width: 100%; }
+  textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 4px; }
+  .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 14px; }
+  .lead-cab { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; margin-bottom: 10px; }
+  .lead-cab .nome { font-size: 18px; font-weight: 700; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 99px; background: var(--verde-fundo); color: var(--verde); }
+  .tag.cinza { background: var(--bg); color: var(--suave); border: 1px solid var(--borda); }
+  .tag.laranja { background: var(--alerta-fundo); color: var(--alerta); }
+  .passo { border-left: 3px solid var(--verde); padding-left: 12px; margin: 12px 0; }
+  .roteiro { background: var(--bg); border-radius: 10px; padding: 12px; font-size: 14.5px; white-space: pre-wrap; }
+  .contador { font-family: var(--mono); font-size: 28px; font-weight: 700; }
+  .seg { display: inline-flex; border: 1px solid var(--borda); border-radius: 9px; overflow: hidden; }
+  .seg button { border: 0; background: transparent; color: var(--suave); padding: 6px 12px; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+  .seg button.ativo { background: var(--texto); color: var(--card); }
+  .tabela { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .tabela th, .tabela td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--borda); vertical-align: middle; }
+  .tabela th { font-size: 12px; color: var(--suave); text-transform: uppercase; letter-spacing: .4px; }
+  .tabela select { padding: 3px 6px; font-size: 13px; width: auto; }
+  .rolagem { overflow-x: auto; }
+  .fila-item { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--borda); font-size: 14px; }
+  .fila-item:last-child { border-bottom: 0; }
+  ul.check { padding-left: 18px; margin: 6px 0; } ul.check li { margin: 4px 0; }
+  .resp-card { border: 1px solid var(--borda); border-radius: 10px; padding: 12px; }
+  .resp-card p { white-space: pre-wrap; margin: 6px 0 10px; font-size: 14px; }
+  .grade-resp { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #0b0c0b; color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 9; max-width: calc(100% - 32px); }
+  .toast.on { opacity: 1; }
+  @media (max-width: 600px) { main { padding: 12px; } .lead-cab .nome { font-size: 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="topo">
+    <h1><span class="barras"><i style="height:10px"></i><i style="height:16px"></i><i style="height:22px"></i></span> Prospecção WhatsApp · Epiverso</h1>
+    <div class="chips" id="chips"></div>
+  </div>
+</header>
+<nav id="nav">
+  <button data-aba="fila" class="ativo">Fila de hoje</button>
+  <button data-aba="leads">Leads</button>
+  <button data-aba="respostas">Respostas prontas</button>
+  <button data-aba="config">Configurações</button>
+  <button data-aba="guia">Regras anti-bloqueio</button>
+</nav>
+<main>
+  <section class="aba ativo" id="aba-fila"></section>
+  <section class="aba" id="aba-leads"></section>
+  <section class="aba" id="aba-respostas"></section>
+  <section class="aba" id="aba-config"></section>
+  <section class="aba" id="aba-guia"></section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="mensagens_whatsapp.js"></script>
+<script>
+'use strict';
+const M = window.MENSAGENS_WHATSAPP;
+const CHAVE = 'epiverso_prospeccao_whatsapp_v1';
+const ANGULOS = ['nfce', 'nfse', 'naocontrib', 'sefaz', 'geral'];
+const STATUS = {
+  novo: 'Novo', enviado: 'Abertura enviada', followup: 'Follow-up enviado', respondeu: 'Respondeu',
+  reuniao: 'Demo agendada', cliente: 'Virou cliente', sem_interesse: 'Sem interesse / pediu para parar',
+  sem_whatsapp: 'Sem WhatsApp', pausado: 'Pausado'
+};
+const CONFIG_PADRAO = {
+  seuNome: '', empresa: 'Epiverso', meta: 15, intervaloMin: 4, intervaloMax: 9, diasFollowup: 3,
+  followupAtivo: true, modoPadrao: 'texto', abrirEm: 'web', horaInicio: 8, horaFim: 18
+};
+
+// ------------------------------------------------------------------ estado
+let E = carregar();
+function carregar() {
+  let base = { config: { ...CONFIG_PADRAO }, leads: [], hashes: [], proximoEnvioEm: 0, rascunhos: {} };
+  try {
+    const bruto = localStorage.getItem(CHAVE);
+    if (bruto) { const s = JSON.parse(bruto); base = { ...base, ...s, config: { ...CONFIG_PADRAO, ...(s.config || {}) } }; }
+  } catch (e) { /* sem localStorage: segue com o padrão */ }
+  return base;
+}
+function salvar() {
+  try { localStorage.setItem(CHAVE, JSON.stringify(E)); }
+  catch (e) { toast('Não consegui salvar no navegador. Faça um backup em Leads > Backup.'); }
+}
+
+// ------------------------------------------------------------------ utilitários
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sortear = a => a[Math.floor(Math.random() * a.length)];
+const embaralhar = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const hojeISO = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const agoraHora = () => new Date().toTimeString().slice(0, 5);
+function dataBR(iso) { if (!iso) return ''; const [a, m, d] = iso.split('-'); return `${d}/${m}`; }
+function hash(s) { let h = 5381; for (const c of s.replace(/\s+/g, ' ').trim().toLowerCase()) h = ((h << 5) + h + c.charCodeAt(0)) | 0; return String(h >>> 0); }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('on'), 2600); }
+async function copiar(txt) {
+  try { await navigator.clipboard.writeText(txt); }
+  catch (e) { const a = document.createElement('textarea'); a.value = txt; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); }
+  toast('Copiado!');
+}
+function diasUteisEntre(isoA, isoB) {
+  let a = new Date(isoA + 'T12:00:00'), b = new Date(isoB + 'T12:00:00'), n = 0;
+  while (a < b) { a.setDate(a.getDate() + 1); const d = a.getDay(); if (d !== 0 && d !== 6) n++; }
+  return n;
+}
+
+// ------------------------------------------------------------------ telefone e nomes
+function normalizarFone(f) {
+  let d = String(f || '').replace(/\D/g, '').replace(/^0+/, '');
+  if (d.length === 10 || d.length === 11) d = '55' + d;
+  return d;
+}
+function tipoFone(d) {
+  if (!/^55\d{10,11}$/.test(d)) return 'invalido';
+  return d.length === 13 && d[4] === '9' ? 'celular' : 'fixo';
+}
+function foneBonito(d) {
+  if (!d) return '';
+  const m = d.match(/^55(\d{2})(\d{4,5})(\d{4})$/);
+  return m ? `(${m[1]}) ${m[2]}-${m[3]}` : d;
+}
+const TITULOS = ['dr', 'dra', 'sr', 'sra', 'prof', 'profa'];
+function primeiroNome(n) {
+  const p = String(n || '').trim().split(/\s+/).filter(Boolean);
+  if (!p.length) return '';
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  if (TITULOS.includes(p[0].replace('.', '').toLowerCase()) && p[1]) return cap(p[0].replace('.', '')) + '. ' + cap(p[1]);
+  return cap(p[0]);
+}
+function limparEscritorio(n) {
+  return String(n || '').replace(/\b(ltda|me|epp|eireli|s\/s|ss|s\.s\.|s\/c|sociedade simples)\b\.?/gi, '')
+    .replace(/[\s\-–,.]+$/, '').replace(/\s{2,}/g, ' ').trim();
+}
+
+// ------------------------------------------------------------------ motor de variações
+function camposOk(t, ctx) { return [...t.matchAll(/\{(\w+)\}/g)].every(m => ctx[m[1]]); }
+function spin(t, ctx) {
+  const re = /\[([^\[\]]*\|[^\[\]]*)\]/;
+  for (let i = 0; i < 500 && re.test(t); i++) {
+    t = t.replace(re, (_, dentro) => { const ops = dentro.split('|').filter(o => camposOk(o, ctx)); return ops.length ? sortear(ops) : ''; });
+  }
+  return t;
+}
+function preencher(t, ctx) { return t.replace(/\{(\w+)\}/g, (_, c) => ctx[c] ?? ''); }
+function limpar(t) {
+  return t.split('\n').map(l => l.replace(/[ \t]+/g, ' ').replace(/ ([,.?!:])/g, '$1').trim()).join('\n')
+    .replace(/\n{3,}/g, '\n\n').trim();
+}
+function escolher(lista, ctx) {
+  for (const t of embaralhar(lista)) { const r = spin(t, ctx); if (camposOk(r, ctx)) return preencher(r, ctx); }
+  return '';
+}
+function comNome(lista, ctx) { // se o lead tem nome, quase sempre usa uma saudação com o nome
+  const com = lista.filter(t => t.includes('{nome}'));
+  return ctx.nome && com.length && Math.random() < 0.85 ? com : lista;
+}
+function contexto(lead) {
+  const h = new Date().getHours();
+  const periodo = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  const ang = lead.angulo || 'geral';
+  return {
+    nome: primeiroNome(lead.nome), escritorio: limparEscritorio(lead.escritorio), cidade: (lead.cidade || '').trim(),
+    seu_nome: E.config.seuNome.trim(), empresa: E.config.empresa.trim() || 'Epiverso',
+    periodo, periodo_min: periodo.toLowerCase(), dor: M.dores[ang].dor
+  };
+}
+function gerarAbertura(lead) {
+  const ctx = contexto(lead), ang = lead.angulo;
+  const sau = escolher(comNome(M.saudacoes, ctx), ctx), apr = escolher(M.apresentacoes, ctx);
+  const ctxt = Math.random() < 0.45 ? escolher(M.contextos, ctx) : '';
+  const gan = escolher(M.ganchos[ang], ctx);
+  const pon = !ctxt && Math.random() < 0.35 ? escolher(M.pontes[ang], ctx) : '';
+  const fec = Math.random() < 0.6 ? escolher(M.fechamentos, ctx) : '';
+  const corpo = [pon, gan].filter(Boolean).join(' ');
+  const layouts = [
+    () => `${sau} ${apr} ${ctxt}\n\n${corpo}\n\n${fec}`,
+    () => `${sau}\n${apr} ${ctxt}\n\n${corpo} ${fec}`,
+    () => `${sau} ${apr}\n\n${ctxt} ${corpo}\n\n${fec}`,
+    () => `${sau}\n\n${apr} ${ctxt} ${corpo}`
+  ];
+  return limpar(sortear(layouts)());
+}
+function gerarUnico(fn) {
+  let t = '';
+  for (let i = 0; i < 40; i++) { t = fn(); if (!E.hashes.includes(hash(t))) break; }
+  return t;
+}
+const gerar = {
+  texto: lead => gerarUnico(() => gerarAbertura(lead)),
+  ola: lead => gerarUnico(() => { const ctx = contexto(lead); return limpar(escolher(comNome(M.ola_audio, ctx), ctx)); }),
+  roteiro: lead => limpar(escolher(M.roteiros_audio[lead.angulo] || M.roteiros_audio.geral, contexto(lead))),
+  followup: lead => gerarUnico(() => limpar(escolher(M.followups, contexto(lead))))
+};
+
+// ------------------------------------------------------------------ fila e métricas
+function enviosDoDia(iso = hojeISO()) {
+  let n = 0;
+  for (const l of E.leads) for (const h of l.historico || []) if (h.data === iso && (h.tipo === 'abertura' || h.tipo === 'followup')) n++;
+  return n;
+}
+function filaHoje() {
+  const hoje = hojeISO(), c = E.config, livres = Math.max(0, c.meta - enviosDoDia());
+  const ok = l => l.puladoEm !== hoje && tipoFone(l.whatsapp) !== 'invalido';
+  const fups = !c.followupAtivo ? [] : E.leads.filter(l => ok(l) && l.status === 'enviado' && l.aberturaEm && diasUteisEntre(l.aberturaEm, hoje) >= c.diasFollowup)
+    .map(lead => ({ lead, tipo: 'followup' }));
+  const novos = E.leads.filter(l => ok(l) && l.status === 'novo').map(lead => ({ lead, tipo: 'abertura' }));
+  return [...fups, ...novos].slice(0, livres);
+}
+function metricas() {
+  let enviados = 0, responderam = 0, pararam = 0;
+  for (const l of E.leads) {
+    if ((l.historico || []).some(h => h.tipo === 'abertura')) enviados++;
+    if (['respondeu', 'reuniao', 'cliente'].includes(l.status)) responderam++;
+    if (l.status === 'sem_interesse') { responderam++; pararam++; }
+  }
+  return { enviados, responderam, pararam, taxa: enviados ? Math.round(100 * responderam / enviados) : 0 };
+}
+function foraDoHorario() {
+  const d = new Date(), h = d.getHours(), dia = d.getDay();
+  if (dia === 0 || dia === 6) return 'Hoje é fim de semana. Mensagem de prospecção no sábado e domingo gera mais bloqueio e denúncia: deixe para segunda.';
+  if (h < E.config.horaInicio || h >= E.config.horaFim) return `Fora do horário comercial (${E.config.horaInicio}h às ${E.config.horaFim}h). Mensagem fora de hora é a que mais vira denúncia.`;
+  return '';
+}
+
+// ------------------------------------------------------------------ cabeçalho
+function renderChips() {
+  const m = metricas(), feitos = enviosDoDia();
+  $('#chips').innerHTML = `
+    <span class="chip">Hoje <b>${feitos}/${E.config.meta}</b></span>
+    <span class="chip">Enviados <b>${m.enviados}</b></span>
+    <span class="chip">Respostas <b>${m.responderam}</b> (${m.taxa}%)</span>
+    <span class="chip">Leads novos <b>${E.leads.filter(l => l.status === 'novo').length}</b></span>`;
+}
+
+// ------------------------------------------------------------------ aba: fila de hoje
+let timerContador = null;
+function renderFila() {
+  const el = $('#aba-fila'), c = E.config, fila = filaHoje(), m = metricas();
+  clearInterval(timerContador);
+  let html = '';
+  if (!c.seuNome.trim()) html += `<div class="aviso ruim">Antes de começar, coloque o seu nome em <b>Configurações</b>: ele entra nas mensagens.</div>`;
+  const fh = foraDoHorario(); if (fh) html += `<div class="aviso">${esc(fh)}</div>`;
+  if (m.enviados >= 20 && m.taxa < 10) html += `<div class="aviso ruim">Taxa de resposta em ${m.taxa}%. Abaixo de 10% é sinal de lista fria ou mensagem fraca, e é aí que vêm as denúncias. Revise a lista e reduza o volume por uns dias.</div>`;
+  if (m.enviados >= 20 && m.pararam / m.enviados > 0.05) html += `<div class="aviso ruim">Mais de 5% pediram para parar. Diminua a meta diária e use mais o modo "olá + áudio" (é mais pessoal).</div>`;
+
+  if (!E.leads.length) {
+    el.innerHTML = html + `<div class="card"><h2>Nenhum lead ainda</h2><p class="suave">Vá em <b>Leads</b> e importe a sua planilha (CSV). Pode usar o <span class="mono">leads_exemplo.csv</span> como modelo.</p></div>`;
+    return;
+  }
+  if (!fila.length) {
+    const feitos = enviosDoDia();
+    el.innerHTML = html + `<div class="card"><h2>${feitos >= c.meta ? 'Meta de hoje batida ✓' : 'Fila vazia'}</h2><p class="suave">${feitos >= c.meta
+      ? `Você já mandou ${feitos} mensagens hoje. Parar aqui é parte da estratégia: volume constante e baixo é o que mantém o número saudável. Agora é responder quem respondeu.`
+      : 'Não há leads novos nem follow-ups vencendo hoje. Importe mais leads na aba Leads.'}</p></div>` + renderEnviadosRecentes();
+    ligarEnviadosRecentes();
+    return;
+  }
+
+  const item = fila[0], lead = item.lead;
+  if (!lead.angulo) { lead.angulo = sortear(ANGULOS); salvar(); }
+  const modo = item.tipo === 'followup' ? 'texto' : (lead.modo || c.modoPadrao);
+  const rk = `${lead.id}:${item.tipo}:${modo}`;
+  if (!E.rascunhos[rk]) {
+    E.rascunhos[rk] = item.tipo === 'followup' ? { texto: gerar.followup(lead) }
+      : modo === 'ola_audio' ? { texto: gerar.ola(lead), roteiro: gerar.roteiro(lead) } : { texto: gerar.texto(lead) };
+    salvar();
+  }
+  const r = E.rascunhos[rk];
+  const espera = Math.max(0, E.proximoEnvioEm - Date.now());
+  const ft = tipoFone(lead.whatsapp);
+
+  html += `<div class="card">
+    <div class="linha entre" style="margin-bottom:6px">
+      <span class="tag ${item.tipo === 'followup' ? 'laranja' : ''}">${item.tipo === 'followup' ? 'Follow-up' : 'Abertura'} · ${enviosDoDia() + 1} de ${c.meta} hoje</span>
+      ${item.tipo === 'abertura' ? `<div class="seg" id="seg-modo">
+        <button data-modo="texto" class="${modo === 'texto' ? 'ativo' : ''}">Texto</button>
+        <button data-modo="ola_audio" class="${modo === 'ola_audio' ? 'ativo' : ''}">Olá + áudio</button></div>` : ''}
+    </div>
+    <div class="lead-cab">
+      <span class="nome">${esc(lead.nome || 'Sem nome')}</span>
+      ${lead.escritorio ? `<span class="suave">${esc(lead.escritorio)}</span>` : ''}
+      ${lead.cidade ? `<span class="suave">${esc(lead.cidade)}${lead.uf ? '/' + esc(lead.uf) : ''}</span>` : ''}
+      <span class="mono">${esc(foneBonito(lead.whatsapp))}</span>
+      ${ft === 'fixo' ? '<span class="tag laranja">Parece fixo: pode não ter WhatsApp</span>' : ''}
+    </div>
+    <div class="linha" style="margin-bottom:8px">
+      <label style="margin:0">Dor:</label>
+      <select id="sel-angulo" style="width:auto">${ANGULOS.map(a => `<option value="${a}" ${a === lead.angulo ? 'selected' : ''}>${esc(M.dores[a].titulo)}</option>`).join('')}</select>
+      ${lead.obs ? `<span class="suave peq">Obs.: ${esc(lead.obs)}</span>` : ''}
+    </div>`;
+
+  if (modo === 'ola_audio' && item.tipo === 'abertura') {
+    html += `<div class="passo"><b>Passo 1 · Mande o olá</b>
+        <textarea id="txt" style="min-height:80px">${esc(r.texto)}</textarea>
+        <div class="linha" style="margin-top:8px">
+          <button class="b" id="btn-outra">🔄 Outra variação</button>
+          <a class="b prim" id="btn-abrir" target="whatsapp_epiverso">Abrir no WhatsApp</a>
+        </div></div>
+      <div class="passo"><b>Passo 2 · Grave o áudio na hora, no mesmo chat (30 a 45 s)</b>
+        <p class="suave peq" style="margin:4px 0 8px">Espere de 20 s a 1 min depois do olá. Grave segurando o microfone do WhatsApp (Web ou celular), falando o nome da pessoa. Não encaminhe áudio pronto: aparece "Encaminhada" e perde o efeito.</p>
+        <div class="roteiro" id="roteiro">${esc(r.roteiro)}</div>
+        <div class="linha" style="margin-top:8px"><button class="b" id="btn-roteiro">🔄 Outro roteiro</button><button class="b" id="btn-copiar-rot">Copiar roteiro</button></div>
+      </div>`;
+  } else {
+    html += `<textarea id="txt">${esc(r.texto)}</textarea>
+      <div class="linha" style="margin-top:8px">
+        <button class="b" id="btn-outra">🔄 Outra variação</button>
+        <a class="b prim" id="btn-abrir" target="whatsapp_epiverso">Abrir no WhatsApp</a>
+      </div>`;
+  }
+  html += `<p class="suave peq" style="margin:10px 0 6px">Abra, confira e aperte <b>Enviar no WhatsApp</b>. Depois volte aqui e marque abaixo.</p>
+    <div class="linha">
+      <button class="b prim" id="btn-enviei">✓ Enviei</button>
+      <button class="b" id="btn-pular">Pular hoje</button>
+      <button class="b" id="btn-semzap">Número sem WhatsApp</button>
+      <button class="b perigo" id="btn-parar">Não chamar</button>
+    </div>
+    <div id="trava" style="display:${espera ? 'block' : 'none'};margin-top:14px" class="aviso ok">
+      <div class="linha entre"><div>Ritmo humano: próximo envio liberado em <span class="contador" id="contador"></span></div>
+      <button class="b mini" id="btn-liberar">Liberar agora</button></div>
+      <div class="peq">Enquanto isso, responda quem respondeu. Intervalos variados entre conversas novas são o que mais protege o número.</div>
+    </div>
+  </div>`;
+
+  if (fila.length > 1) {
+    html += `<div class="card"><h2>Na fila depois deste (${fila.length - 1})</h2>${fila.slice(1).map(f => `
+      <div class="fila-item"><span>${esc(f.lead.nome || 'Sem nome')} <span class="suave">· ${esc(f.lead.escritorio || '')}</span></span>
+      <span class="tag ${f.tipo === 'followup' ? 'laranja' : 'cinza'}">${f.tipo === 'followup' ? 'Follow-up' : 'Abertura'}</span></div>`).join('')}</div>`;
+  }
+  html += renderEnviadosRecentes();
+  el.innerHTML = html;
+  ligarEnviadosRecentes();
+
+  // ações do card
+  const txt = $('#txt');
+  const travar = on => ['#btn-abrir', '#btn-enviei'].forEach(s => $(s).classList.toggle('desab', on));
+  const link = () => {
+    const n = lead.whatsapp, t = encodeURIComponent(txt.value);
+    return c.abrirEm === 'app' ? `whatsapp://send?phone=${n}&text=${t}` : c.abrirEm === 'wa' ? `https://wa.me/${n}?text=${t}` : `https://web.whatsapp.com/send?phone=${n}&text=${t}`;
+  };
+  const atualizarLink = () => { $('#btn-abrir').href = link(); };
+  atualizarLink();
+  txt.addEventListener('input', () => { r.texto = txt.value; salvar(); atualizarLink(); });
+  $('#btn-outra').onclick = () => {
+    r.texto = item.tipo === 'followup' ? gerar.followup(lead) : modo === 'ola_audio' ? gerar.ola(lead) : gerar.texto(lead);
+    txt.value = r.texto; salvar(); atualizarLink();
+  };
+  if ($('#btn-roteiro')) {
+    $('#btn-roteiro').onclick = () => { r.roteiro = gerar.roteiro(lead); $('#roteiro').textContent = r.roteiro; salvar(); };
+    $('#btn-copiar-rot').onclick = () => copiar(r.roteiro);
+  }
+  $('#sel-angulo').onchange = e => { lead.angulo = e.target.value; delete E.rascunhos[rk]; salvar(); renderFila(); };
+  if ($('#seg-modo')) $('#seg-modo').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    lead.modo = b.dataset.modo; salvar(); renderFila();
+  };
+  $('#btn-enviei').onclick = () => {
+    const h = { data: hojeISO(), hora: agoraHora(), tipo: item.tipo, modo, texto: txt.value, dor: lead.angulo };
+    (lead.historico ||= []).push(h);
+    if (item.tipo === 'abertura') { lead.status = 'enviado'; lead.aberturaEm = h.data; } else { lead.status = 'followup'; lead.followupEm = h.data; }
+    E.hashes.push(hash(txt.value)); if (E.hashes.length > 5000) E.hashes = E.hashes.slice(-5000);
+    const min = Number(c.intervaloMin) || 0, max = Math.max(min, Number(c.intervaloMax) || 0);
+    E.proximoEnvioEm = Date.now() + (min + Math.random() * (max - min)) * 60000;
+    delete E.rascunhos[rk]; salvar(); toast('Registrado ✓'); renderTudo();
+  };
+  $('#btn-pular').onclick = () => { lead.puladoEm = hojeISO(); salvar(); renderTudo(); };
+  $('#btn-semzap').onclick = () => { lead.status = 'sem_whatsapp'; salvar(); renderTudo(); };
+  $('#btn-parar').onclick = () => { if (confirm('Marcar como "não chamar"? Ele sai da fila de vez.')) { lead.status = 'sem_interesse'; salvar(); renderTudo(); } };
+  $('#btn-liberar').onclick = () => {
+    if (confirm('Liberar agora? Mandar mensagens novas em sequência rápida é o padrão que o WhatsApp mais associa a disparo em massa.')) { E.proximoEnvioEm = 0; salvar(); renderFila(); }
+  };
+  if (espera) {
+    travar(true);
+    const tick = () => {
+      const s = Math.max(0, Math.ceil((E.proximoEnvioEm - Date.now()) / 1000));
+      $('#contador').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      if (!s) { clearInterval(timerContador); $('#trava').style.display = 'none'; travar(false); }
+    };
+    tick(); timerContador = setInterval(tick, 1000);
+  }
+}
+function renderEnviadosRecentes() {
+  const lista = E.leads.filter(l => ['enviado', 'followup'].includes(l.status))
+    .sort((a, b) => (b.followupEm || b.aberturaEm || '').localeCompare(a.followupEm || a.aberturaEm || '')).slice(0, 25);
+  if (!lista.length) return '';
+  return `<div class="card"><h2>Aguardando resposta</h2><p class="suave peq" style="margin:0 0 8px">Marque quem respondeu: é o que mede se a mensagem está funcionando.</p>
+    ${lista.map(l => `<div class="fila-item" data-id="${l.id}"><span>${esc(l.nome || 'Sem nome')} <span class="suave">· ${esc(l.escritorio || '')} · ${STATUS[l.status]} ${dataBR(l.followupEm || l.aberturaEm)}</span></span>
+      <span class="linha"><button class="b mini" data-st="respondeu">Respondeu</button><button class="b mini" data-st="reuniao">Demo</button><button class="b mini perigo" data-st="sem_interesse">Parar</button></span></div>`).join('')}</div>`;
+}
+function ligarEnviadosRecentes() {
+  document.querySelectorAll('#aba-fila .fila-item[data-id] button[data-st]').forEach(b => b.onclick = () => {
+    const l = E.leads.find(x => x.id === b.closest('[data-id]').dataset.id);
+    l.status = b.dataset.st; (l.historico ||= []).push({ data: hojeISO(), hora: agoraHora(), tipo: 'status', texto: STATUS[l.status] });
+    salvar(); renderTudo();
+  });
+}
+
+// ------------------------------------------------------------------ aba: leads
+const ALIASES = {
+  nome: ['nome', 'contato', 'responsavel', 'responsável', 'name'],
+  escritorio: ['escritorio', 'escritório', 'empresa', 'razao social', 'razão social', 'nome fantasia', 'fantasia'],
+  whatsapp: ['whatsapp', 'whats', 'celular', 'telefone', 'fone', 'tel', 'phone'],
+  email: ['email', 'e-mail', 'mail'],
+  cidade: ['cidade', 'municipio', 'município'], uf: ['uf', 'estado'],
+  dor: ['dor', 'angulo', 'ângulo', 'foco'], origem: ['origem', 'fonte'], obs: ['obs', 'observacao', 'observação', 'notas']
+};
+function lerCSV(texto) {
+  texto = texto.replace(/^﻿/, '');
+  const prim = texto.split('\n')[0] || '';
+  const sep = (prim.match(/;/g) || []).length > (prim.match(/,/g) || []).length ? ';' : (prim.includes('\t') ? '\t' : ',');
+  const linhas = []; let campo = '', linha = [], aspas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const ch = texto[i];
+    if (aspas) { if (ch === '"') { if (texto[i + 1] === '"') { campo += '"'; i++; } else aspas = false; } else campo += ch; }
+    else if (ch === '"') aspas = true;
+    else if (ch === sep) { linha.push(campo); campo = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && texto[i + 1] === '\n') i++; linha.push(campo); linhas.push(linha); linha = []; campo = ''; }
+    else campo += ch;
+  }
+  if (campo || linha.length) { linha.push(campo); linhas.push(linha); }
+  return linhas.filter(l => l.some(c => c.trim()));
+}
+function normalizarDor(d) {
+  d = String(d || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  if (/nfc/.test(d)) return 'nfce'; if (/nfs|servico/.test(d)) return 'nfse';
+  if (/contrib|ie\b/.test(d)) return 'naocontrib'; if (/sefaz|demora/.test(d)) return 'sefaz';
+  if (/geral|todas/.test(d)) return 'geral'; return '';
+}
+function importar(texto) {
+  const linhas = lerCSV(texto);
+  if (linhas.length < 2) return toast('Não achei linhas. A primeira linha precisa ser o cabeçalho.');
+  const cab = linhas[0].map(c => c.trim().toLowerCase());
+  const idx = {}; for (const [k, al] of Object.entries(ALIASES)) idx[k] = cab.findIndex(c => al.includes(c));
+  if (idx.whatsapp < 0) return toast('Não achei a coluna de WhatsApp/telefone no cabeçalho.');
+  const existentes = new Set(E.leads.map(l => l.whatsapp));
+  let novos = 0, dup = 0, inval = 0;
+  for (const l of linhas.slice(1)) {
+    const v = k => idx[k] >= 0 ? (l[idx[k]] || '').trim() : '';
+    const fone = normalizarFone(v('whatsapp'));
+    if (tipoFone(fone) === 'invalido') { inval++; continue; }
+    if (existentes.has(fone)) { dup++; continue; }
+    existentes.add(fone);
+    E.leads.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), nome: v('nome'), escritorio: v('escritorio'), whatsapp: fone,
+      email: v('email'), cidade: v('cidade'), uf: v('uf'), angulo: normalizarDor(v('dor')), origem: v('origem'), obs: v('obs'),
+      status: 'novo', criadoEm: hojeISO(), historico: [] });
+    novos++;
+  }
+  salvar(); renderTudo();
+  toast(`${novos} importados · ${dup} repetidos · ${inval} sem telefone válido`);
+}
+function exportarCSV() {
+  const cols = ['nome', 'escritorio', 'whatsapp', 'email', 'cidade', 'uf', 'dor', 'status', 'abertura_em', 'followup_em', 'origem', 'obs'];
+  const q = s => `"${String(s ?? '').replace(/"/g, '""')}"`;
+  const linhas = [cols.join(';'), ...E.leads.map(l => [l.nome, l.escritorio, l.whatsapp, l.email, l.cidade, l.uf, l.angulo, STATUS[l.status], l.aberturaEm, l.followupEm, l.origem, l.obs].map(q).join(';'))];
+  baixar('﻿' + linhas.join('\r\n'), `prospeccao_whatsapp_${hojeISO()}.csv`, 'text/csv');
+}
+function baixar(conteudo, nome, tipo) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([conteudo], { type: tipo })); a.download = nome; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+let filtroBusca = '', filtroStatus = '';
+function renderLeads() {
+  const el = $('#aba-leads');
+  el.innerHTML = `<div class="card"><h2>Importar leads</h2>
+      <p class="suave peq">CSV com cabeçalho (separado por vírgula ou ponto e vírgula, do jeito que o Excel salva). Colunas reconhecidas:
+      <span class="mono">nome, escritorio, whatsapp, email, cidade, uf, dor, origem, obs</span>. Só <span class="mono">whatsapp</span> é obrigatória.
+      Na coluna <span class="mono">dor</span> pode pôr NFC-e, NFS-e, não contribuinte, SEFAZ ou geral (vazio = sorteia). Números repetidos são ignorados.</p>
+      <div class="linha"><input type="file" id="arq" accept=".csv,.txt" style="width:auto"></div>
+      <label for="colar">Ou cole aqui:</label>
+      <textarea id="colar" style="min-height:90px" placeholder="nome;escritorio;whatsapp;cidade&#10;Marcos Silva;Contabilidade Silva;(48) 99999-0000;Florianópolis"></textarea>
+      <div class="linha" style="margin-top:8px"><button class="b prim" id="btn-importar">Importar</button></div>
+    </div>
+    <div class="card"><div class="linha entre"><h2>${E.leads.length} leads</h2>
+      <div class="linha"><button class="b mini" id="btn-csv">Exportar CSV</button><button class="b mini" id="btn-backup">Backup</button>
+      <label class="b mini" style="margin:0">Restaurar backup<input type="file" id="arq-backup" accept=".json" hidden></label>
+      <button class="b mini perigo" id="btn-zerar">Apagar tudo</button></div></div>
+      <p class="suave peq">Os dados ficam só neste navegador, neste computador. Faça backup de vez em quando (e antes de limpar o navegador).</p>
+      <div class="linha" style="margin:8px 0"><input id="busca" placeholder="Buscar por nome, escritório, cidade ou número" style="flex:1;min-width:200px" value="${esc(filtroBusca)}">
+      <select id="fstatus" style="width:auto"><option value="">Todos os status</option>${Object.entries(STATUS).map(([k, v]) => `<option value="${k}" ${k === filtroStatus ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+      <div class="rolagem"><table class="tabela"><thead><tr><th>Nome</th><th>Escritório</th><th>WhatsApp</th><th>Cidade</th><th>Dor</th><th>Status</th><th>Último</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+    </div>`;
+  const tb = $('#tb');
+  const pintar = () => {
+    const b = filtroBusca.toLowerCase();
+    const lista = E.leads.filter(l => (!filtroStatus || l.status === filtroStatus) && (!b || [l.nome, l.escritorio, l.cidade, l.whatsapp].join(' ').toLowerCase().includes(b)));
+    tb.innerHTML = lista.slice(0, 500).map(l => `<tr data-id="${l.id}"><td>${esc(l.nome)}</td><td>${esc(l.escritorio)}</td><td class="mono">${esc(foneBonito(l.whatsapp))}</td>
+      <td>${esc(l.cidade)}${l.uf ? '/' + esc(l.uf) : ''}</td><td>${l.angulo ? esc(M.dores[l.angulo].titulo) : '<span class="suave">sorteio</span>'}</td>
+      <td><select data-campo="status">${Object.entries(STATUS).map(([k, v]) => `<option value="${k}" ${k === l.status ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
+      <td class="suave">${dataBR(l.followupEm || l.aberturaEm)}</td><td><button class="b mini perigo" data-del>✕</button></td></tr>`).join('')
+      + (lista.length > 500 ? `<tr><td colspan="8" class="suave">Mostrando 500 de ${lista.length}. Use a busca.</td></tr>` : '');
+  };
+  pintar();
+  $('#busca').oninput = e => { filtroBusca = e.target.value; pintar(); };
+  $('#fstatus').onchange = e => { filtroStatus = e.target.value; pintar(); };
+  tb.onchange = e => { const l = E.leads.find(x => x.id === e.target.closest('tr').dataset.id); l.status = e.target.value; salvar(); renderChips(); };
+  tb.onclick = e => {
+    if (!e.target.matches('[data-del]')) return;
+    const id = e.target.closest('tr').dataset.id;
+    if (confirm('Remover este lead?')) { E.leads = E.leads.filter(x => x.id !== id); salvar(); pintar(); renderChips(); }
+  };
+  $('#arq').onchange = async e => { const f = e.target.files[0]; if (f) importar(await lerArquivo(f)); };
+  $('#btn-importar').onclick = () => { const t = $('#colar').value.trim(); if (t) importar(t); };
+  $('#btn-csv').onclick = exportarCSV;
+  $('#btn-backup').onclick = () => baixar(JSON.stringify(E, null, 1), `backup_prospeccao_${hojeISO()}.json`, 'application/json');
+  $('#arq-backup').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try { const s = JSON.parse(await f.text()); if (!Array.isArray(s.leads)) throw 0; if (confirm(`Restaurar ${s.leads.length} leads? Substitui o que está aqui.`)) { E = { ...carregar(), ...s, config: { ...CONFIG_PADRAO, ...s.config } }; salvar(); renderTudo(); } }
+    catch (err) { toast('Arquivo de backup inválido.'); }
+  };
+  $('#btn-zerar').onclick = () => { if (confirm('Apagar TODOS os leads e o histórico? Faça um backup antes.')) { E.leads = []; E.rascunhos = {}; salvar(); renderTudo(); } };
+}
+async function lerArquivo(f) {
+  const buf = await f.arrayBuffer();
+  const utf = new TextDecoder('utf-8').decode(buf);
+  return utf.includes('�') ? new TextDecoder('windows-1252').decode(buf) : utf; // Excel antigo salva em ANSI
+}
+
+// ------------------------------------------------------------------ aba: respostas prontas
+function renderRespostas() {
+  const el = $('#aba-respostas');
+  el.innerHTML = `<div class="card"><h2>Respostas prontas</h2><p class="suave peq">Para quando a pessoa responde. Responda rápido (de preferência em menos de 1 hora):
+    conversa com ida e volta é o que mais fortalece o número. Ajuste o texto ao que a pessoa falou.</p>
+    <label for="resp-nome">Nome do contato</label><input id="resp-nome" placeholder="Ex.: Marcos" style="max-width:300px">
+    <div class="grade-resp" id="grade-resp" style="margin-top:14px"></div></div>`;
+  const pintar = () => {
+    const ctx = { ...contexto({ angulo: 'geral' }), nome: primeiroNome($('#resp-nome').value) || '{nome}' };
+    $('#grade-resp').innerHTML = M.respostas.map((r, i) => {
+      const t = limpar(preencher(spin(r.texto, ctx), ctx));
+      return `<div class="resp-card"><b>${esc(r.titulo)}</b><p id="resp-${i}">${esc(t)}</p><button class="b mini" data-i="${i}">Copiar</button></div>`;
+    }).join('');
+  };
+  pintar();
+  $('#resp-nome').oninput = pintar;
+  $('#grade-resp').onclick = e => { const b = e.target.closest('[data-i]'); if (b) copiar($('#resp-' + b.dataset.i).textContent); };
+}
+
+// ------------------------------------------------------------------ aba: configurações
+function renderConfig() {
+  const c = E.config, el = $('#aba-config');
+  el.innerHTML = `<div class="card"><h2>Configurações</h2><div class="grade">
+    <div><label>Seu nome (entra nas mensagens)</label><input id="c-seuNome" value="${esc(c.seuNome)}" placeholder="Ex.: Ana"></div>
+    <div><label>Empresa</label><input id="c-empresa" value="${esc(c.empresa)}"></div>
+    <div><label>Meta diária (aberturas + follow-ups)</label><input id="c-meta" type="number" min="1" max="40" value="${c.meta}"></div>
+    <div><label>Intervalo entre envios (min · máx, em minutos)</label><div class="linha" style="flex-wrap:nowrap"><input id="c-intervaloMin" type="number" min="0" value="${c.intervaloMin}"><input id="c-intervaloMax" type="number" min="0" value="${c.intervaloMax}"></div></div>
+    <div><label>Follow-up depois de (dias úteis)</label><input id="c-diasFollowup" type="number" min="1" value="${c.diasFollowup}"></div>
+    <div><label>Fazer follow-up?</label><select id="c-followupAtivo"><option value="1" ${c.followupAtivo ? 'selected' : ''}>Sim, 1 só</option><option value="" ${!c.followupAtivo ? 'selected' : ''}>Não</option></select></div>
+    <div><label>Modo padrão da abertura</label><select id="c-modoPadrao"><option value="texto" ${c.modoPadrao === 'texto' ? 'selected' : ''}>Texto</option><option value="ola_audio" ${c.modoPadrao === 'ola_audio' ? 'selected' : ''}>Olá + áudio</option></select></div>
+    <div><label>Abrir conversa em</label><select id="c-abrirEm">
+      <option value="web" ${c.abrirEm === 'web' ? 'selected' : ''}>WhatsApp Web (mesma aba)</option>
+      <option value="app" ${c.abrirEm === 'app' ? 'selected' : ''}>App do WhatsApp no computador</option>
+      <option value="wa" ${c.abrirEm === 'wa' ? 'selected' : ''}>wa.me (celular)</option></select></div>
+    <div><label>Horário comercial (início · fim)</label><div class="linha" style="flex-wrap:nowrap"><input id="c-horaInicio" type="number" min="0" max="23" value="${c.horaInicio}"><input id="c-horaFim" type="number" min="1" max="24" value="${c.horaFim}"></div></div>
+    </div>
+    <div class="linha" style="margin-top:14px"><button class="b prim" id="btn-salvar-cfg">Salvar</button>
+    <span class="suave peq">Recomendado: meta 15, intervalo 4 a 9 min, follow-up em 3 dias úteis.</span></div></div>
+    <div class="card"><h2>Teste das variações</h2><p class="suave peq">Gera 5 aberturas de exemplo com um lead fictício, para você ver como as mensagens saem.</p>
+    <button class="b" id="btn-teste">Gerar exemplos</button><div id="exemplos"></div></div>`;
+  $('#btn-salvar-cfg').onclick = () => {
+    for (const k of Object.keys(CONFIG_PADRAO)) {
+      const i = $('#c-' + k); if (!i) continue;
+      c[k] = typeof CONFIG_PADRAO[k] === 'number' ? Number(i.value) : typeof CONFIG_PADRAO[k] === 'boolean' ? Boolean(i.value) : i.value;
+    }
+    if (c.intervaloMax < c.intervaloMin) c.intervaloMax = c.intervaloMin;
+    E.rascunhos = {}; salvar(); toast('Configurações salvas'); renderTudo();
+  };
+  $('#btn-teste').onclick = () => {
+    const lead = { nome: 'Marcos Silva', escritorio: 'Contabilidade Exemplo Ltda', cidade: 'Joinville' };
+    $('#exemplos').innerHTML = ANGULOS.map(a => `<h3>${esc(M.dores[a].titulo)}</h3><div class="roteiro">${esc(gerarAbertura({ ...lead, angulo: a }))}</div>`).join('');
+  };
+}
+
+// ------------------------------------------------------------------ aba: guia
+function renderGuia() {
+  $('#aba-guia').innerHTML = `<div class="card"><h2>As regras que mantêm o número vivo</h2>
+    <p class="suave peq">O WhatsApp bane por sinais: muitas conversas novas sem resposta, denúncias e bloqueios, textos iguais em sequência e ritmo de robô. Tudo aqui foi feito para não gerar esses sinais.</p>
+    <h3>Número e perfil</h3><ul class="check">
+      <li><b>Use um número só para prospecção</b>, nunca o de suporte (48) 99208-6832. Se algo der errado, o suporte dos clientes continua no ar.</li>
+      <li>WhatsApp Business com foto (logo), nome "Nome · Epiverso", descrição, site e horário de atendimento. Perfil completo = menos denúncia.</li>
+      <li>Chip novo? Aqueça 2 semanas antes: converse com 10 a 20 contatos conhecidos, entre em grupos, receba mensagens. Depois comece com 5 por dia e suba até 15.</li></ul>
+    <h3>Volume e ritmo</h3><ul class="check">
+      <li>Até 15 conversas novas por dia, de segunda a sexta, das 8h às 18h. Evite perto do dia 20 (DAS) e os dias de fechamento.</li>
+      <li>Espalhe: 3 blocos de 5 (manhã, começo da tarde, fim da tarde), com 4 a 9 minutos entre cada um. O painel controla isso para você.</li>
+      <li>Nunca use extensão de disparo, robô no WhatsApp Web ou lista de transmissão para quem não salvou seu número. É isso que derruba conta.</li></ul>
+    <h3>A mensagem</h3><ul class="check">
+      <li>Primeira mensagem curta, <b>sem link, sem PDF, sem imagem</b>, terminando em pergunta fácil de responder. Resposta é o sinal que mais protege o número.</li>
+      <li>Cada mensagem sai diferente (o painel sorteia saudação, apresentação, pergunta e fechamento). Nunca cole o mesmo texto para todos.</li>
+      <li>Sempre uma saída fácil ("se não fizer sentido, me avisa"). Quem pode dizer "não" não precisa denunciar.</li>
+      <li>Um follow-up só. Não respondeu depois disso, pare.</li>
+      <li>Link, vídeo e material só depois que a pessoa responder.</li></ul>
+    <h3>Olá + áudio</h3><ul class="check">
+      <li>Mande o olá, espere de 20 s a 1 min e grave o áudio na hora, no próprio chat, falando o nome da pessoa (30 a 45 s).</li>
+      <li>Não encaminhe áudio gravado antes: aparece "Encaminhada" e parece disparo.</li>
+      <li>Áudio costuma ter mais resposta, mas é mais invasivo para quem não te conhece: use em escritórios menores e quando o olá for respondido rápido.</li></ul>
+    <h3>Sinais de alerta (pare e reduza)</h3><ul class="check">
+      <li>Taxa de resposta abaixo de 10% (aparece no topo do painel).</li>
+      <li>Mais de 5% pedindo para parar ou bloqueando.</li>
+      <li>Aviso do WhatsApp de "conta com atividade incomum" ou banimento temporário: pare 3 a 7 dias e volte com metade do volume.</li></ul>
+    </div>`;
+}
+
+// ------------------------------------------------------------------ navegação
+function renderTudo() { renderChips(); renderFila(); renderLeads(); renderRespostas(); renderConfig(); renderGuia(); }
+$('#nav').onclick = e => {
+  const b = e.target.closest('button[data-aba]'); if (!b) return;
+  document.querySelectorAll('#nav button').forEach(x => x.classList.toggle('ativo', x === b));
+  document.querySelectorAll('.aba').forEach(x => x.classList.toggle('ativo', x.id === 'aba-' + b.dataset.aba));
+  if (b.dataset.aba === 'fila') renderFila();
+};
+renderTudo();
+</script>
+</body>
+</html>
