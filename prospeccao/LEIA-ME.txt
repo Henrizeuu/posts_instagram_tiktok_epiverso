@@ -1,0 +1,104 @@
+EPIVERSO · PROSPECÇÃO (WhatsApp + E-mail)
+==========================================
+
+Sistema que roda no seu computador para prospectar escritórios contábeis todo dia:
+- WhatsApp conectado pelo QR Code: 15 conversas novas por dia, cada mensagem diferente,
+  em texto ou "olá + áudio" (o seu áudio vai como mensagem de voz).
+- E-mail: sequência de 3 e-mails com aquecimento automático (10 → 40 por dia).
+- Quem responde sai da sequência na hora e aparece no painel, com aviso sonoro.
+- Painel no navegador para mudar mensagens, cadastrar números e e-mails, gravar áudios
+  e configurar tudo.
+
+Ocupa pouco espaço: o zip tem menos de 2 MB (5 MB descompactado). Não instala navegador escondido.
+O único programa necessário é o Node.js (gratuito, ~30 MB).
+
+
+1. INSTALAR (uma vez só, 3 minutos)
+-----------------------------------
+1) Instale o Node.js, versão LTS: https://nodejs.org/pt-br/download
+   (Windows: baixe o "Instalador Windows (.msi)" e clique em Avançar até Concluir.)
+2) Descompacte este zip numa pasta fácil, ex.: Documentos\epiverso-prospeccao
+   (não rode de dentro do zip).
+3) Abra:
+   - Windows: dois cliques em "INICIAR (Windows).bat"
+     (se o Windows avisar "protegeu o computador": Mais informações > Executar assim mesmo)
+   - Mac: clique com o botão direito em "INICIAR (Mac).command" > Abrir
+   - Linux: ./iniciar-linux.sh
+4) O painel abre sozinho no navegador (http://localhost:3210).
+   Uma janela preta fica aberta: é o sistema rodando. NÃO FECHE enquanto quiser enviar.
+
+
+2. PRIMEIROS PASSOS NO PAINEL
+-----------------------------
+1) Configurações > Meus dados: seu nome e empresa (entram nas mensagens).
+2) Início > Conectar WhatsApp: no celular do número de PROSPECÇÃO, abra
+   WhatsApp > Aparelhos conectados > Conectar um aparelho e aponte para o QR Code.
+   Sem câmera? Use "Conectar com código pelo número".
+   O celular continua funcionando normal; o sistema vira um "aparelho conectado".
+3) Leads: cadastre um por um ou importe a planilha (modelo: leads_exemplo.csv).
+   Pode ter só WhatsApp, só e-mail ou os dois.
+4) Áudios (opcional): grave 2 ou 3 áudios por dor direto no painel, lendo o roteiro.
+5) Mensagens: ajuste os textos do seu jeito. "Gerar exemplos" mostra como ficam.
+6) Configurações > E-mail: escolha o provedor, coloque o e-mail e a senha de app, salve
+   e mande um e-mail de teste.
+7) Início > "Ligar envios" (WhatsApp e e-mail). Pronto: ele envia sozinho nos dias úteis,
+   no horário configurado, espalhando ao longo do dia.
+
+O computador precisa estar ligado e com a janela preta aberta no horário de envio.
+Fechou, os envios param; abriu de novo, continuam de onde pararam.
+
+
+3. PARA NÃO TOMAR BLOQUEIO NO WHATSAPP
+-------------------------------------
+- USE UM NÚMERO SÓ PARA PROSPECÇÃO. Nunca o do suporte (48) 99208-6832.
+- Chip novo? Use normalmente por 2 semanas antes (conversas, grupos, áudios) e comece
+  com meta 5 por dia. Suba para 10 e depois 15.
+- WhatsApp Business com perfil completo: foto, nome "Ana · Epiverso", descrição, site.
+- O sistema já cuida do resto: no máximo 15 por dia, intervalos de pessoa, "digitando…",
+  só em dias úteis e horário comercial, cada mensagem diferente, sem link na primeira,
+  1 follow-up só, e quem pede para sair nunca mais recebe.
+- Responda rápido quem respondeu (dá para responder pelo próprio painel).
+- Se a taxa de resposta ficar abaixo de 10% ou o WhatsApp avisar de restrição:
+  pause, espere 3 a 7 dias e volte com metade do volume.
+
+Aviso honesto: conectar pelo QR usa o WhatsApp Web por baixo, não a API oficial (paga).
+Nesse volume e com essas regras funciona bem, mas o WhatsApp pode restringir qualquer
+número que pareça disparo em massa. Por isso o número separado é tão importante.
+
+
+4. PARA O E-MAIL NÃO CAIR NO SPAM
+--------------------------------
+- Use um domínio separado para prospecção (ex.: epiversofiscal.com.br) com caixa de
+  pessoa (ana@...). Se algo der errado, o e-mail principal da empresa não é afetado.
+- Configure SPF, DKIM e DMARC no DNS do domínio:
+    SPF   (TXT em @):      v=spf1 include:_spf.google.com ~all   (Google Workspace)
+    DKIM  (TXT):           gere em Admin Google > Apps > Gmail > Autenticar e-mail
+    DMARC (TXT em _dmarc): v=DMARC1; p=none; rua=mailto:ana@seudominio.com.br
+  Confira em https://mxtoolbox.com
+- Gmail/Workspace: ative a verificação em 2 etapas e crie uma "senha de app"
+  (Conta Google > Segurança > Senhas de app). É ela que vai no painel.
+- Teste em https://www.mail-tester.com: só comece com nota 9/10 ou mais.
+- O sistema aquece sozinho (10, 20, 30 e depois 40 por dia) e para a sequência de quem
+  respondeu lendo a sua caixa de entrada.
+- Mais de 40 por dia: use outra caixa de e-mail numa segunda cópia da pasta do sistema,
+  com outra lista de leads.
+
+
+5. SEUS DADOS E BACKUP
+---------------------
+Tudo fica na pasta "dados" (criada ao lado do INICIAR): leads, mensagens, áudios,
+configurações e a conexão do WhatsApp.
+- Backup: copie a pasta "dados".
+- Trocar de computador ou atualizar o sistema: baixe o zip novo, descompacte e copie a sua
+  pasta "dados" para dentro dele.
+- A pasta "dados" tem a conexão do seu WhatsApp e a senha do e-mail: não envie para ninguém.
+
+
+6. PROBLEMAS COMUNS
+------------------
+- "Node.js não está instalado": instale pelo link acima e abra o INICIAR de novo.
+- O painel não abriu: abra o navegador em http://localhost:3210
+- QR Code não aparece: confira a internet; feche a janela preta e abra o INICIAR de novo.
+- WhatsApp desconectou sozinho: foi desconectado pelo celular. Conecte de novo pelo QR.
+- E-mail "recusou usuário/senha": use a senha de app, não a senha normal.
+- Microfone não grava: permita o microfone no navegador (cadeado na barra de endereço).

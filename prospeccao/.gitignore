@@ -1,10 +1,6 @@
-# Dados reais, senhas e histórico ficam só no seu computador (vale também para cópias como email_joao/)
-leads*.csv
-!leads_exemplo.csv
-**/config.ini
-**/estado_email.json
-**/envios.csv
-**/descadastrados.txt
-**/*.tmp
-**/*.log
-__pycache__/
+# Dados reais (leads, senhas, conexão do WhatsApp) ficam só no computador de quem usa
+dados/
+node_modules/
+dist/
+*.tmp
+*.log

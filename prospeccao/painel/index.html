@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epiverso · Prospecção</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0c0b'/%3E%3Crect x='7' y='17' width='4' height='8' fill='%2334c77b'/%3E%3Crect x='14' y='12' width='4' height='13' fill='%2334c77b'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%2334c77b'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<header>
+  <div class="topo">
+    <h1><span class="barras"><i style="height:10px"></i><i style="height:16px"></i><i style="height:22px"></i></span> Epiverso · Prospecção</h1>
+    <div class="chips" id="chips"></div>
+  </div>
+  <nav id="nav">
+    <button data-aba="inicio" class="ativo">Início</button>
+    <button data-aba="leads">Leads</button>
+    <button data-aba="mensagens">Mensagens</button>
+    <button data-aba="audios">Áudios</button>
+    <button data-aba="config">Configurações</button>
+    <button data-aba="guia">Como usar</button>
+  </nav>
+</header>
+<main>
+  <section class="aba ativo" id="aba-inicio"></section>
+  <section class="aba" id="aba-leads"></section>
+  <section class="aba" id="aba-mensagens"></section>
+  <section class="aba" id="aba-audios"></section>
+  <section class="aba" id="aba-config"></section>
+  <section class="aba" id="aba-guia"></section>
+</main>
+<div class="modal-fundo" id="modal" hidden><div class="modal" id="modal-caixa"></div></div>
+<div class="toast" id="toast"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
