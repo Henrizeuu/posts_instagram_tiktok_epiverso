@@ -1,0 +1,22 @@
+KIT EPIVERSO · OUTUBRO 2026 · INSTAGRAM + TIKTOK
+================================================
+Comece por ESTRATEGIA.md (o estudo IG × TikTok, o calendário e as músicas).
+
+instagram/  (identidade visual Epiverso preservada)
+  01_reels_nfse_mudou_hoje/           Reels narrado 22,8 s · notícia do dia (NFS-e com IBS/CBS)
+  02_carrossel_faltam_92_dias/        8 lâminas · checklist Simples + IBS/CBS (com foto do Marcos)
+  03_carrossel_um_dia_no_escritorio/  7 lâminas em foto · a rotina da Ana com o painel
+  04_estatico_manifesto/              1 imagem · "Contador não é baixador de XML."
+  05_reels_pov_sexta_17h58/           Reels humor 11,8 s · POV + tela real da busca
+
+tiktok/  (linguagem nativa do TikTok, marca discreta)
+  01_video_pov_dia_19/                9,6 s · POV humor, cortes no ritmo
+  02_carrossel_coisas_que_so_contador_entende/  7 fotos (photo mode)
+  03_video_explicativo_nfse/          55 s · narrado, legenda palavra por palavra
+  04_video_eu_2025_vs_2026/           9,4 s · trend de transição
+  05_video_respondendo_comentario/    13,3 s · resposta a comentário + tela real do sistema
+
+banco_de_imagens/  as 19 fotos geradas (Ana, Marcos, Júlia, escritório) para reutilizar em stories e posts futuros
+_producao/         scripts usados para montar tudo
+
+Formatos: posts 1080x1350 (4:5); Reels/TikTok 1080x1920 (9:16), H.264 30 fps, AAC 48 kHz, -14 LUFS.

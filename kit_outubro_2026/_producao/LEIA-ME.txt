@@ -1,0 +1,9 @@
+Scripts usados para montar as peças (HTML/CSS renderizado no Chromium via Playwright + ffmpeg).
+- kit.py: template da identidade Epiverso (cores, grade, fontes Inter / JetBrains Mono / TikTok Sans)
+- ig_carrosseis.py: carrosséis 02 e 03 e o estático 04 do Instagram
+- reels_ig.py: Reels 01 e 05 (animação quadro a quadro, 30 fps)
+- tiktok.py: vídeos 01, 03, 04, 05 e o carrossel 02 do TikTok
+- sfx.py: efeitos sonoros sintetizados (livres de direitos)
+Para refazer (ex.: trocar "92 dias" por outro número), ajuste o texto no script e rode de novo.
+Os caminhos apontam para a pasta de trabalho da sessão; ajuste a variável S em kit.py.
+Fontes: Inter, JetBrains Mono e TikTok Sans (todas com licença aberta OFL, via npm @fontsource).

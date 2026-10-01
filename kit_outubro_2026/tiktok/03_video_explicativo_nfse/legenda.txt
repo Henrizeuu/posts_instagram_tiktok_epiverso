@@ -1,0 +1,46 @@
+TIKTOK · 03 · VÍDEO EXPLICATIVO NARRADO (55 s) · POSTAR: QUA 01/10 ou QUI 02/10, 12h
+=====================================================================================
+
+LEGENDA (no TikTok a legenda funciona como título de busca)
+-----------------------------------------------------------
+NFS-e com IBS e CBS desde 1º de outubro: o que muda e o que o contador precisa fazer agora 🧾
+
+1. confere o XML (grupo IBSCBS)
+2. avisa os clientes que o PDF mudou
+3. janeiro: vez do Simples Nacional
+
+salva e manda pro colega do fiscal 📌
+
+#reformatributaria #nfse #ibscbs #contabilidade #contador
+
+SOM
+---
+- Já tem locução + legenda palavra por palavra. Se quiser fundo musical: CML, gênero "Lo-fi" ou
+  "Chill beats", volume 5–10%. Nada com letra (briga com a voz).
+- Epidemic Sound: "Dream Chasing" (Mizlo), bem baixo.
+
+POR QUE FUNCIONA
+----------------
+Notícia + utilidade + 45–60 s: é a faixa de duração que mais segura gente em conteúdo de finanças/negócios
+no TikTok. As palavras "NFS-e", "IBS", "CBS" e "reforma tributária" estão faladas, escritas na tela e na
+legenda: é assim que o TikTok indexa para a busca.
+
+VERSÃO MAIS FORTE: GRAVADA POR UMA PESSOA REAL
+----------------------------------------------
+Rosto de verdade falando para a câmera rende mais confiança. Use o mesmo roteiro (texto abaixo), celular na
+vertical, luz de janela de frente, e cole as telas do sistema com o recurso "tela verde" do TikTok.
+
+ROTEIRO (≈55 s)
+Gente, mudou a NFS-e e quase ninguém tá falando disso. Desde primeiro de outubro, a nota de serviço também
+vem com IBS e CBS, que são os impostos novos da reforma tributária. Calma: por enquanto é só teste. A CBS
+aparece com 0,9% e o IBS com 0,1%, e isso não aumenta o imposto de ninguém. Mas presta atenção em três coisas.
+Um: confere se o XML das notas de serviço tá vindo com o grupo IBS/CBS. Dois: avisa os clientes, porque o PDF
+da nota vai mudar e eles vão te perguntar. Três: em janeiro é a vez do Simples Nacional. Faltam 92 dias.
+Aqui no escritório, o sistema já mostra esses campos em cada nota, então a conferência leva minutos.
+Salva esse vídeo e manda pro colega do fiscal.
+
+VOZ
+---
+Voz sintética do ElevenLabs ("Ana Alice"). Confirme se o seu plano do ElevenLabs permite uso comercial;
+no plano gratuito, não permite. Se não permitir, grave a sua voz por cima com o roteiro acima.
+Rótulo de conteúdo gerado por IA: ligado.
