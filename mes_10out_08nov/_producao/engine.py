@@ -60,7 +60,7 @@ def seg(scene, out):
     z = scene.get('z', 1.04)
     zoom = f",scale=w='trunc(1080*(1+({z}-1)*t/{d})/2)*2':h='trunc(1920*(1+({z}-1)*t/{d})/2)*2':eval=frame,crop=1080:1920" if z != 1 else ''
     vf = f"setpts=PTS/{sp},{base}{zoom},fps={FPS},format=yuv420p" + scene.get('vf', '')
-    subprocess.run(['ffmpeg','-v','error','-y','-ss',str(ss),'-i',f,'-t',str(d*sp),'-vf',vf,'-an','-c:v','libx264','-preset','veryfast','-crf','18',out], check=True)
+    subprocess.run(['ffmpeg','-v','error','-y','-ss',str(ss),'-i',f,'-t',str(d),'-vf',vf,'-an','-c:v','libx264','-preset','veryfast','-crf','18',out], check=True)
     return out
 
 def build(spec, out_mp4):

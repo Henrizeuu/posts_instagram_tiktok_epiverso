@@ -1,0 +1,16 @@
+Reels · o XML mudou
+POSTAR: 28/10/2026 (qua) às 12h
+FORMATO: Reels 9:16 · 24 s (capa: capa.jpg, título centralizado para o grid 4:5)
+
+LEGENDA (copiar e colar):
+Dentro de cada item agora tem o grupo IBSCBS: CST, cClassTrib, base, alíquota e valor. Se o sistema que confere não lê esse grupo, o relatório do mês fica incompleto. 🔍
+
+Comente XML que a gente te mostra o relatório do Painel com coluna por imposto.
+
+#xml #ibscbs #reformatributaria #contabilidade #escritoriocontabil
+
+TEXTO ALTERNATIVO (acessibilidade): Vídeo com pessoas reais em escritório e textos na tela; transcrição na legenda automática do Instagram.
+
+MÚSICA: Voz já no vídeo. Música opcional bem baixa (5–10%).
+
+AO POSTAR: ative "legendas automáticas", use capa.jpg como capa e compartilhe no feed. Responda os comentários na primeira hora.
