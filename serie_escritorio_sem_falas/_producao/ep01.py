@@ -1,246 +1,174 @@
-"""Escritório sem falas · ep. 01 · "é rapidinho" (2D, SVG + timeline JS, renderizado quadro a quadro)"""
+"""Escritório sem falas · ep. 01 · identidade dos posts (preto, grade, verde, Inter/JBM) + balões legíveis"""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/build')
-from kit import FONTS
-DUR = 11.6
+from kit import FONTS, B
+DUR = 14.0
 HTML = r"""<!doctype html><html><head><meta charset='utf-8'><style>""" + FONTS + r"""
-*{margin:0;padding:0} html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
-.hook{position:absolute;left:70px;right:150px;top:230px;text-align:center;font-family:TT;font-weight:700;line-height:1.45}
-.hook span{background:#fff;color:#111;padding:8px 20px;border-radius:14px;font-size:58px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+*{margin:0;padding:0;box-sizing:border-box} html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A;font-family:Inter;-webkit-font-smoothing:antialiased}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:54px 54px;-webkit-mask-image:radial-gradient(ellipse 95% 60% at 85% 0%,#000 0%,rgba(0,0,0,.35) 55%,transparent 85%)}
+.glow{position:absolute;width:1200px;height:1200px;right:-480px;top:-560px;background:radial-gradient(circle,rgba(16,185,129,.24) 0%,rgba(16,185,129,.07) 35%,transparent 65%)}
+.logo{position:absolute;left:80px;top:150px;height:42px}
+.kicker{position:absolute;left:80px;top:268px;font-family:JBM;font-weight:500;color:#10B981;font-size:24px;letter-spacing:.42em;display:flex;align-items:center;gap:18px;text-transform:uppercase}
+.kicker:before{content:'';width:34px;height:3px;background:#10B981;display:block}
+.title{position:absolute;left:78px;right:80px;top:316px;font-weight:800;font-size:104px;letter-spacing:-.055em;line-height:.98;background:linear-gradient(180deg,#fff 25%,#BFC0C7 85%);-webkit-background-clip:text;color:transparent}
+.title .g{-webkit-text-fill-color:#10B981}
+.card{position:absolute;left:40px;top:560px;width:1000px;height:960px;border-radius:36px;background:#121214;border:1px solid rgba(255,255,255,.08);overflow:hidden}
+.chip{position:absolute;right:80px;top:330px;font-family:JBM;color:#8A8A92;font-size:20px;letter-spacing:.3em;text-align:right}
+.chip b{display:block;font-weight:500;color:#10B981;font-size:46px;letter-spacing:.04em;margin-top:6px}
+.foot{position:absolute;left:80px;right:80px;top:1550px;display:flex;justify-content:space-between;font-family:JBM;font-size:22px;letter-spacing:.34em;color:#6E6E76}
+.bal{position:absolute;opacity:0;transform-origin:var(--ox) var(--oy)}
+.bal .box{border-radius:30px;padding:22px 30px;font-weight:700;font-size:46px;letter-spacing:-.025em;line-height:1.12}
+.bal.me .box{background:#F2F2F3;color:#0A0A0A;box-shadow:0 16px 40px rgba(0,0,0,.45)}
+.bal.cli .box{background:#121214;color:#fff;border:2px solid #10B981;box-shadow:0 16px 40px rgba(0,0,0,.55)}
+.bal.cli .lab{font-family:JBM;font-weight:500;font-size:19px;letter-spacing:.3em;color:#10B981;margin-bottom:10px}
+.bal .tail{position:absolute;width:34px;height:34px;transform:rotate(45deg)}
+.bal.me .tail{background:#F2F2F3}.bal.cli .tail{background:#121214;border-right:2px solid #10B981;border-bottom:2px solid #10B981}
+.g{color:#10B981}
 </style></head><body>
-<svg id="s" width="1080" height="1920" viewBox="40 60 1000 1778" xmlns="http://www.w3.org/2000/svg">
+<div class="grid"></div><div class="glow"></div>
+<img class="logo" src="file://""" + B + r"""logo_wordmark.png">
+<div class="kicker">Escritório sem falas · ep. 01</div>
+<div class="title">É <span class="g">rapidinho.</span></div>
+<div class="card">
+<svg width="1000" height="960" viewBox="0 420 1080 1037" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
 <defs>
- <radialGradient id="gW" cx="35%" cy="28%" r="80%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#EEF1F3"/><stop offset="1" stop-color="#C5CCD2"/></radialGradient>
- <radialGradient id="gW2" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#E9EDF0"/><stop offset="1" stop-color="#BFC7CE"/></radialGradient>
- <linearGradient id="gWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B7C2BC"/><stop offset="1" stop-color="#A6B2AB"/></linearGradient>
- <linearGradient id="gFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C9286"/><stop offset="1" stop-color="#857B70"/></linearGradient>
- <linearGradient id="gDesk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E2C9A4"/><stop offset="1" stop-color="#C8A97F"/></linearGradient>
- <radialGradient id="gGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#BFD8FF" stop-opacity=".9"/><stop offset="1" stop-color="#BFD8FF" stop-opacity="0"/></radialGradient>
- <radialGradient id="gPh" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#DDF7EC" stop-opacity="0"/></radialGradient>
- <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+ <radialGradient id="gW" cx="35%" cy="28%" r="80%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#ECEEF0"/><stop offset="1" stop-color="#B9C0C6"/></radialGradient>
+ <radialGradient id="gW2" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#E7EAED"/><stop offset="1" stop-color="#B4BCC3"/></radialGradient>
+ <radialGradient id="gScr" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#10B981" stop-opacity=".55"/><stop offset="1" stop-color="#10B981" stop-opacity="0"/></radialGradient>
+ <radialGradient id="gPh" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#34D399" stop-opacity=".9"/><stop offset="1" stop-color="#34D399" stop-opacity="0"/></radialGradient>
+ <pattern id="pg" width="54" height="54" patternUnits="userSpaceOnUse"><path d="M54 0H0V54" fill="none" stroke="rgba(255,255,255,.035)" stroke-width="1"/></pattern>
+ <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10"/></filter>
 </defs>
-<!-- parede, rodapé, chão -->
-<rect width="1080" height="1500" fill="url(#gWall)"/>
-<rect y="1480" width="1080" height="440" fill="url(#gFloor)"/>
-<rect y="1468" width="1080" height="18" fill="#8E9A93"/>
+<rect x="0" y="400" width="1080" height="1100" fill="#141417"/><rect x="0" y="400" width="1080" height="1100" fill="url(#pg)"/>
+<rect y="1440" width="1080" height="80" fill="#0E0E10"/><rect y="1438" width="1080" height="3" fill="rgba(255,255,255,.07)"/>
 <!-- janela -->
-<g transform="translate(640 520)">
- <rect x="-14" y="-14" width="368" height="468" rx="10" fill="#2B3036"/>
- <rect id="sky" width="340" height="440" fill="#CFE6F7"/>
- <g id="sun"><circle cx="250" cy="110" r="42" fill="#FFF6D8"/></g>
- <g id="stars" opacity="0"><circle cx="70" cy="80" r="3" fill="#fff"/><circle cx="210" cy="60" r="2.5" fill="#fff"/><circle cx="290" cy="170" r="3" fill="#fff"/><circle cx="120" cy="210" r="2" fill="#fff"/><circle cx="40" cy="300" r="2.5" fill="#fff"/></g>
- <g id="city" fill="#7E93A6"><rect x="0" y="330" width="70" height="110"/><rect x="80" y="290" width="60" height="150"/><rect x="150" y="350" width="80" height="90"/><rect x="240" y="300" width="100" height="140"/></g>
- <g id="lights" opacity="0" fill="#FFD77A"><rect x="18" y="350" width="10" height="12"/><rect x="40" y="380" width="10" height="12"/><rect x="95" y="310" width="10" height="12"/><rect x="115" y="350" width="10" height="12"/><rect x="170" y="370" width="10" height="12"/><rect x="260" y="320" width="10" height="12"/><rect x="300" y="360" width="10" height="12"/><rect x="280" y="400" width="10" height="12"/></g>
- <rect x="163" width="14" height="440" fill="#2B3036"/><rect y="213" width="340" height="14" fill="#2B3036"/>
- <rect x="-30" y="452" width="400" height="20" rx="4" fill="#2B3036"/>
+<g transform="translate(650 500)">
+ <rect x="-12" y="-12" width="344" height="444" rx="18" fill="#1E1E22" stroke="rgba(255,255,255,.08)"/>
+ <rect id="sky" width="320" height="420" rx="10" fill="#5E7F9C"/>
+ <g id="sun"><circle cx="232" cy="96" r="36" fill="#F3E3B0"/></g>
+ <g id="stars" opacity="0" fill="#fff"><circle cx="60" cy="70" r="3"/><circle cx="200" cy="54" r="2.5"/><circle cx="280" cy="150" r="3"/><circle cx="110" cy="190" r="2"/><circle cx="36" cy="270" r="2.5"/></g>
+ <g id="city" fill="#3E556B"><rect x="0" y="310" width="66" height="110"/><rect x="74" y="272" width="56" height="148"/><rect x="138" y="330" width="76" height="90"/><rect x="222" y="284" width="98" height="136"/></g>
+ <g id="lights" opacity="0" fill="#10B981"><rect x="16" y="330" width="10" height="12"/><rect x="38" y="360" width="10" height="12"/><rect x="88" y="292" width="10" height="12"/><rect x="108" y="330" width="10" height="12"/><rect x="160" y="350" width="10" height="12"/><rect x="244" y="302" width="10" height="12"/><rect x="284" y="340" width="10" height="12"/><rect x="262" y="380" width="10" height="12"/></g>
+ <rect x="153" width="14" height="420" fill="#1E1E22"/><rect y="203" width="320" height="14" fill="#1E1E22"/>
 </g>
 <!-- relógio -->
-<g transform="translate(330 470)">
- <circle r="118" fill="#2B3036"/><circle r="104" fill="#F7F7F4"/>
+<g transform="translate(300 560)">
+ <circle r="112" fill="#1E1E22" stroke="rgba(255,255,255,.1)" stroke-width="2"/><circle r="98" fill="#EDEDEF"/>
  <g id="ticks"></g>
- <g id="hh"><rect x="-7" y="-58" width="14" height="66" rx="7" fill="#2B3036"/></g>
- <g id="mm"><rect x="-5" y="-86" width="10" height="94" rx="5" fill="#2B3036"/></g>
+ <g id="hh"><rect x="-7" y="-54" width="14" height="62" rx="7" fill="#0A0A0A"/></g>
+ <g id="mm"><rect x="-5" y="-80" width="10" height="88" rx="5" fill="#0A0A0A"/></g>
  <circle r="9" fill="#10B981"/>
 </g>
 <!-- prateleira -->
-<g transform="translate(60 830)">
- <rect x="22" y="-118" width="34" height="118" rx="5" fill="#10B981"/><rect x="60" y="-110" width="34" height="110" rx="5" fill="#2B3036"/>
- <rect x="98" y="-118" width="34" height="118" rx="5" fill="#3A4047"/><rect x="136" y="-112" width="34" height="112" rx="5" fill="#10B981"/>
- <path d="M200 -10 h60 l-8 -56 h-44z" fill="#C98A64"/><circle cx="230" cy="-86" r="34" fill="#2F7A4E"/><circle cx="210" cy="-100" r="22" fill="#3B8F5D"/>
- <rect y="0" width="300" height="18" rx="4" fill="#C8A97F"/>
+<g transform="translate(50 860)">
+ <rect x="18" y="-110" width="32" height="110" rx="5" fill="#10B981"/><rect x="54" y="-102" width="32" height="102" rx="5" fill="#2A2A2F"/>
+ <rect x="90" y="-110" width="32" height="110" rx="5" fill="#3A3A40"/><rect x="126" y="-104" width="32" height="104" rx="5" fill="#0E9F6E"/>
+ <rect y="0" width="200" height="14" rx="4" fill="#2A2A2F"/>
 </g>
-<!-- cadeira (atrás do boneco) -->
-<g>
- <rect x="120" y="980" width="44" height="330" rx="20" fill="#2B3036"/>
- <rect x="130" y="1300" width="300" height="40" rx="18" fill="#2B3036"/>
- <rect x="268" y="1340" width="22" height="120" fill="#3A4047"/>
- <rect x="190" y="1452" width="180" height="16" rx="8" fill="#3A4047"/>
-</g>
-<!-- personagem A (base no assento) -->
+<!-- cadeira -->
+<g fill="#26262B"><rect x="120" y="980" width="44" height="330" rx="20"/><rect x="130" y="1300" width="300" height="40" rx="18"/><rect x="268" y="1340" width="22" height="100"/><rect x="190" y="1432" width="180" height="14" rx="7"/></g>
+<!-- personagem -->
 <g id="A">
- <ellipse cx="0" cy="8" rx="150" ry="16" fill="#000" opacity=".18" filter="url(#soft)"/>
+ <ellipse cx="0" cy="10" rx="150" ry="16" fill="#000" opacity=".5" filter="url(#soft)"/>
  <g id="Abody">
-  <g id="Aarm2"><ellipse cx="0" cy="105" rx="40" ry="112" fill="#C8CFD5"/></g>
-  <ellipse cx="0" cy="-190" rx="150" ry="192" fill="url(#gW)" stroke="#AEB7BF" stroke-width="2"/>
+  <g id="Aarm2"><ellipse cx="0" cy="105" rx="40" ry="112" fill="#9AA3AB"/></g>
+  <ellipse cx="0" cy="-190" rx="150" ry="192" fill="url(#gW)"/>
   <g id="Ahead">
-   <circle cx="0" cy="-118" r="118" fill="url(#gW2)" stroke="#AEB7BF" stroke-width="2"/>
+   <circle cx="0" cy="-118" r="118" fill="url(#gW2)"/>
    <path d="M -100 -150 A 112 112 0 0 1 98 -160" fill="none" stroke="#10B981" stroke-width="16" stroke-linecap="round"/>
    <path d="M 6 -96 C 50 -40, 92 -40, 118 -58" fill="none" stroke="#10B981" stroke-width="9" stroke-linecap="round"/>
-   <circle cx="121" cy="-60" r="13" fill="#2B3036"/>
-   <ellipse cx="0" cy="-104" rx="34" ry="40" fill="#10B981"/><ellipse cx="-8" cy="-114" rx="12" ry="14" fill="#5FD3A9" opacity=".7"/>
+   <circle cx="121" cy="-60" r="13" fill="#0A0A0A"/>
+   <ellipse cx="0" cy="-104" rx="34" ry="40" fill="#10B981"/><ellipse cx="-8" cy="-114" rx="12" ry="14" fill="#6EE7B7" opacity=".6"/>
   </g>
   <g id="Aarm1">
-   <ellipse cx="0" cy="105" rx="42" ry="114" fill="url(#gW)" stroke="#AEB7BF" stroke-width="2"/>
-   <g id="flag" opacity="0"><rect x="-5" y="150" width="10" height="230" rx="5" fill="#2B3036" transform="rotate(180 0 150)"/>
-     <path id="cloth" d="M 5 -60 C 60 -80, 100 -40, 150 -62 L 150 40 C 100 62, 60 22, 5 42 Z" fill="#FFFFFF" stroke="#2B3036" stroke-width="4" transform="translate(0 -12)"/></g>
+   <ellipse cx="0" cy="105" rx="42" ry="114" fill="url(#gW)"/>
+   <g id="flag" opacity="0"><rect x="-5" y="-80" width="10" height="230" rx="5" fill="#EDEDEF"/>
+     <path id="cloth" d="M 5 -60 C 60 -80, 100 -40, 150 -62 L 150 40 C 100 62, 60 22, 5 42 Z" fill="#FFFFFF" transform="translate(0 -12)"/></g>
   </g>
  </g>
 </g>
-<!-- mesa e objetos (na frente) -->
-<g>
- <rect x="440" y="1250" width="660" height="34" rx="8" fill="url(#gDesk)"/>
- <rect x="470" y="1284" width="22" height="200" fill="#2B3036"/><rect x="1020" y="1284" width="22" height="200" fill="#2B3036"/>
- <!-- monitor (de lado, tela virada pro boneco) -->
- <ellipse id="mglow" cx="860" cy="1050" rx="230" ry="230" fill="url(#gGlow)" opacity=".15"/>
- <rect x="900" y="1130" width="18" height="120" fill="#2B3036"/><rect x="852" y="1236" width="110" height="16" rx="6" fill="#2B3036"/>
- <path d="M 870 960 L 920 940 L 920 1160 L 870 1140 Z" fill="#2B3036"/>
- <path id="scr" d="M 874 966 L 902 956 L 902 1144 L 874 1134 Z" fill="#DDEBFF"/>
- <!-- teclado, caneca -->
- <rect x="640" y="1236" width="150" height="16" rx="6" fill="#2B3036"/>
- <g transform="translate(990 1182)"><rect width="56" height="68" rx="10" fill="#F2F2EE"/><path d="M56 16 q30 4 0 36" fill="none" stroke="#F2F2EE" stroke-width="10"/><rect x="8" y="12" width="40" height="8" rx="4" fill="#10B981"/></g>
- <!-- celular -->
- <g id="phone" transform="translate(540 1238)">
-  <ellipse id="pglow" cx="40" cy="0" rx="80" ry="60" fill="url(#gPh)" opacity="0"/>
-  <rect x="0" y="-4" width="84" height="14" rx="6" fill="#1E2227"/>
-  <rect id="pscr" x="6" y="-6" width="72" height="4" rx="2" fill="#3A4047"/>
-  <g id="vib" opacity="0" stroke="#2B3036" stroke-width="5" fill="none" stroke-linecap="round">
-   <path d="M -14 -26 q -12 14 0 28"/><path d="M -32 -36 q -18 24 0 48"/><path d="M 98 -26 q 12 14 0 28"/><path d="M 116 -36 q 18 24 0 48"/></g>
- </g>
- <g id="speed" opacity="0" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"><path d="M 600 1150 l 40 -30"/><path d="M 640 1170 l 50 -36"/><path d="M 700 1160 l 40 -30"/></g>
+<!-- mesa -->
+<rect x="440" y="1250" width="660" height="30" rx="8" fill="#2A2A2F"/><rect x="440" y="1250" width="660" height="4" rx="2" fill="#10B981" opacity=".55"/>
+<rect x="470" y="1280" width="20" height="160" fill="#1E1E22"/><rect x="1020" y="1280" width="20" height="160" fill="#1E1E22"/>
+<ellipse id="mglow" cx="840" cy="1050" rx="240" ry="240" fill="url(#gScr)" opacity=".25"/>
+<rect x="900" y="1130" width="18" height="120" fill="#1E1E22"/><rect x="852" y="1236" width="110" height="16" rx="6" fill="#1E1E22"/>
+<path d="M 868 960 L 922 938 L 922 1162 L 868 1140 Z" fill="#1E1E22"/>
+<path d="M 874 968 L 912 953 L 912 1146 L 874 1132 Z" fill="#0F2A22"/>
+<g fill="#10B981"><path d="M 880 1100 l 6 -2 v 20 l -6 2z"/><path d="M 890 1092 l 6 -2 v 30 l -6 2z" opacity=".8"/><path d="M 900 1080 l 6 -2 v 44 l -6 2z"/></g>
+<rect x="640" y="1236" width="150" height="16" rx="6" fill="#1E1E22"/>
+<g transform="translate(990 1182)"><rect width="56" height="68" rx="10" fill="#EDEDEF"/><path d="M56 16 q30 4 0 36" fill="none" stroke="#EDEDEF" stroke-width="10"/><rect x="8" y="12" width="40" height="8" rx="4" fill="#10B981"/></g>
+<g id="phone">
+ <ellipse id="pglow" cx="40" cy="-6" rx="90" ry="64" fill="url(#gPh)" opacity="0"/>
+ <rect x="0" y="-4" width="84" height="14" rx="6" fill="#0A0A0A" stroke="rgba(255,255,255,.15)"/>
+ <rect id="pscr" x="6" y="-6" width="72" height="4" rx="2" fill="#2A2A2F"/>
+ <g id="vib" opacity="0" stroke="#10B981" stroke-width="5" fill="none" stroke-linecap="round"><path d="M -14 -26 q -12 14 0 28"/><path d="M -32 -36 q -18 24 0 48"/><path d="M 98 -26 q 12 14 0 28"/><path d="M 116 -36 q 18 24 0 48"/></g>
 </g>
-<!-- noite -->
-<rect id="night" width="1080" height="1920" fill="#0B1838" opacity="0" style="mix-blend-mode:multiply"/>
-<ellipse id="mglow2" cx="820" cy="1060" rx="330" ry="300" fill="url(#gGlow)" opacity="0" style="mix-blend-mode:screen"/>
-<!-- balões -->
-<g id="balloons"></g>
+<g id="speed" opacity="0" stroke="#10B981" stroke-width="6" stroke-linecap="round"><path d="M 600 1150 l 40 -30"/><path d="M 640 1170 l 50 -36"/><path d="M 700 1160 l 40 -30"/></g>
+<rect id="night" x="0" y="400" width="1080" height="1100" fill="#000" opacity="0"/>
+<ellipse id="mglow2" cx="800" cy="1080" rx="360" ry="320" fill="url(#gScr)" opacity="0" style="mix-blend-mode:screen"/>
 </svg>
-<div class="hook" id="hook"><span>quando o cliente diz que "é rapidinho"</span></div>
+</div>
+<div class="chip">HORA<b id="clk">17:55</b></div>
+<div class="bal me" id="b1" style="left:400px;top:790px;--ox:30px;--oy:150px"><div class="box">17h55. Hoje eu saio<br>no horário ✨</div><div class="tail" style="left:44px;bottom:-14px"></div></div>
+<div class="bal cli" id="b2" style="left:480px;top:880px;--ox:110px;--oy:200px"><div class="box"><div class="lab">CLIENTE · AGORA</div>É rapidinho!<br>1 minutinho 🙏</div><div class="tail" style="left:70px;bottom:-15px"></div></div>
+<div class="bal me" id="b3" style="left:230px;top:820px;--ox:70px;--oy:120px"><div class="box" style="font-size:60px;padding:6px 34px 18px">…</div><div class="tail" style="left:50px;bottom:-14px"></div></div>
+<div class="bal cli" id="b4" style="left:480px;top:860px;--ox:110px;--oy:220px"><div class="box"><div class="lab">CLIENTE · 21:41</div>E aquele outro<br>rapidinho? 🙏🙏</div><div class="tail" style="left:70px;bottom:-15px"></div></div>
+<div class="foot"><span>PAINEL FISCAL</span><span>EPIVERSO</span></div>
 <script>
-// ------- glifos da "língua do escritório" (aleatórios, mas fixos por semente)
-function rng(seed){ return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
-function glyph(seed){
-  const r = rng(seed * 97 + 13), w = 34, h = 46; let d = '';
-  const base = Math.floor(r() * 3);
-  if (base == 0) d += `M${8 + r() * 6} 6 L${8 + r() * 6} ${h - 6} `;
-  else if (base == 1) d += `M6 ${h - 8} Q ${w / 2} ${4 + r() * 10} ${w - 6} ${h - 8} `;
-  else d += `M${w / 2 - 11} ${h / 2} a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 `;
-  const n = 1 + Math.floor(r() * 2);
-  for (let i = 0; i < n; i++) {
-    const t = Math.floor(r() * 4), y = 8 + r() * (h - 16);
-    if (t == 0) d += `M6 ${y} L${w - 6} ${y - 6} `;
-    else if (t == 1) d += `M${w - 9} ${y} a3 3 0 1 0 0.1 0 `;
-    else if (t == 2) d += `M${w / 2} ${y} l 10 10 `;
-    else d += `M6 ${y} c 7 -9, 13 9, 22 0 `;
-  }
-  return d;
-}
-function word(seed, n, x0, y0, col){
-  let s = ''; for (let i = 0; i < n; i++) s += `<path d="${glyph(seed + i)}" transform="translate(${x0 + i * 40} ${y0})" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
-  return s;
-}
-// balão: id, centro (x,y), largura, altura, ponta (tx,ty), conteúdo
-const BAL = [];
-function balloon(id, x, y, w, h, tx, ty, inner, dark){
-  const fill = dark ? '#1E2227' : '#FFFFFF', st = dark ? '#1E2227' : '#2B3036';
-  const g = `<g id="${id}" opacity="0"><g class="in">
-    <path d="M ${x - 30} ${y + h / 2 - 6} L ${tx} ${ty} L ${x + 20} ${y + h / 2 - 6} Z" fill="${fill}" stroke="${st}" stroke-width="5" stroke-linejoin="round"/>
-    <rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${h / 2.4}" fill="${fill}" stroke="${st}" stroke-width="5"/>
-    <rect x="${x - 40}" y="${y + h / 2 - 12}" width="70" height="16" fill="${fill}"/>
-    ${inner}</g></g>`;
-  BAL.push(g); return id;
-}
-const E = (x, y, s, e) => `<text x="${x}" y="${y}" font-size="${s}" text-anchor="middle" dominant-baseline="central">${e}</text>`;
-// A quer ir pra casa
-balloon('b1', 330, 650, 300, 130, 300, 770, word(11, 3, 205, 618, '#2B3036') + E(375, 650, 64, '🏠') + E(440, 620, 34, '✨'));
-// celular: "1 min? 🙏"
-balloon('b2', 600, 1010, 420, 150, 585, 1215, word(41, 2, 420, 975, '#FFFFFF') + E(560, 1010, 64, '⏱️') + `<text x="640" y="1012" font-size="58" font-family="TT" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">1'</text>` + E(730, 1010, 60, '🙏'), true);
-// A: "…"
-balloon('b3', 300, 690, 190, 110, 300, 790, `<circle cx="255" cy="690" r="11" fill="#2B3036"/><circle cx="300" cy="690" r="11" fill="#2B3036"/><circle cx="345" cy="690" r="11" fill="#2B3036"/>`);
-// celular de novo: "1 min? 🙏🙏"
-balloon('b4', 700, 790, 460, 150, 600, 1210, word(77, 3, 500, 755, '#FFFFFF') + E(680, 790, 64, '⏱️') + `<text x="760" y="792" font-size="58" font-family="TT" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">1'</text>` + E(850, 790, 56, '🙏🙏'), true);
-document.getElementById('balloons').innerHTML = BAL.join('');
-// marcadores do relógio
-let tk = ''; for (let i = 0; i < 12; i++) tk += `<rect x="-4" y="-98" width="8" height="${i % 3 ? 14 : 22}" rx="3" fill="#2B3036" transform="rotate(${i * 30})"/>`;
-document.getElementById('ticks').innerHTML = tk;
-// ------- motor de keyframes
-const ease = { io: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, l: t => t, o: t => 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2), i: t => t * t * t };
-const TR = {};
-function k(id, prop, arr){ (TR[id] = TR[id] || {})[prop] = arr; }
-function val(arr, t){
-  if (t <= arr[0][0]) return arr[0][1];
-  for (let i = 1; i < arr.length; i++) if (t <= arr[i][0]) {
-    const [t0, v0] = arr[i - 1], [t1, v1, e] = arr[i]; const p = (ease[e || 'io'])((t - t0) / (t1 - t0));
-    return typeof v0 === 'number' ? v0 + (v1 - v0) * p : lerpc(v0, v1, p);
-  }
-  return arr[arr.length - 1][1];
-}
+const ease = { io: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2, l: t => t, o: t => 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2) };
+const TR = {}; function k(id, prop, arr){ (TR[id] = TR[id] || {})[prop] = arr; }
+function val(arr, t){ if (t <= arr[0][0]) return arr[0][1];
+  for (let i = 1; i < arr.length; i++) if (t <= arr[i][0]) { const [t0, v0] = arr[i - 1], [t1, v1, e] = arr[i]; const p = (ease[e || 'io'])((t - t0) / (t1 - t0));
+    return typeof v0 === 'number' ? v0 + (v1 - v0) * p : lerpc(v0, v1, p); } return arr[arr.length - 1][1]; }
 function lerpc(a, b, p){ const A = parseInt(a.slice(1), 16), B = parseInt(b.slice(1), 16);
-  const c = [16, 8, 0].map(s => Math.round(((A >> s) & 255) + (((B >> s) & 255) - ((A >> s) & 255)) * p));
-  return '#' + c.map(x => x.toString(16).padStart(2, '0')).join(''); }
+  return '#' + [16, 8, 0].map(s => Math.round(((A >> s) & 255) + (((B >> s) & 255) - ((A >> s) & 255)) * p).toString(16).padStart(2, '0')).join(''); }
+let tk = ''; for (let i = 0; i < 12; i++) tk += `<rect x="-4" y="-92" width="8" height="${i % 3 ? 12 : 20}" rx="3" fill="#0A0A0A" transform="rotate(${i * 30})"/>`;
+document.getElementById('ticks').innerHTML = tk;
 const BASE = { A: [300, 1300], Abody: [0, 0], Ahead: [0, -330], Aarm1: [26, -300], Aarm2: [-20, -300], phone: [540, 1238], hh: [0, 0], mm: [0, 0] };
-for (const id of ['b1', 'b2', 'b3', 'b4']) BASE[id] = [0, 0];
+const POPS = [['b1', 1.45, 3.45], ['b2', 4.35, 6.6], ['b3', 6.7, 7.6], ['b4', 11.1, 13.4]];
 function apply(t){
-  for (const id in BASE) if (!TR[id]) { const el = document.getElementById(id); if (el && el.tagName == 'g' && !id.startsWith('b')) el.setAttribute('transform', `translate(${BASE[id][0]} ${BASE[id][1]})`); }
-  for (const id in TR) {
-    const el = document.getElementById(id), P = TR[id], b = BASE[id] || [0, 0];
-    const g = p => P[p] ? val(P[p], t) : null;
-    if (P.fill) el.setAttribute('fill', g('fill'));
-    if (P.op != null) el.setAttribute('opacity', g('op'));
-    if (P.x || P.y || P.r || P.sx || P.sy) {
-      const x = b[0] + (g('x') || 0), y = b[1] + (g('y') || 0), r = g('r') || 0, sx = P.sx ? g('sx') : 1, sy = P.sy ? g('sy') : 1;
-      el.setAttribute('transform', `translate(${x} ${y}) rotate(${r}) scale(${sx} ${sy})`);
-    }
-  }
-  // balões: pop de escala ao redor do próprio centro
-  for (const [id, cx, cy, t0, t1] of POPS) {
-    const el = document.getElementById(id), inn = el.querySelector('.in');
-    let s = 0, o = 0;
-    if (t >= t0 && t <= t1) { const a = Math.min(1, (t - t0) / .22), z = Math.min(1, (t1 - t) / .15); s = .55 + .45 * ease.o(a); o = Math.min(a * 2, 1) * z; s *= (.85 + .15 * z); }
-    el.setAttribute('opacity', o); inn.setAttribute('transform', `translate(${cx} ${cy}) scale(${s}) translate(${-cx} ${-cy})`);
-  }
-  document.getElementById('hook').style.opacity = t < 2.9 ? 1 : 0;
+  for (const id in BASE) if (!TR[id]) document.getElementById(id).setAttribute('transform', `translate(${BASE[id][0]} ${BASE[id][1]})`);
+  for (const id in TR) { const el = document.getElementById(id), P = TR[id], b = BASE[id] || [0, 0], g = p => P[p] ? val(P[p], t) : null;
+    if (P.fill) el.setAttribute('fill', g('fill')); if (P.op) el.setAttribute('opacity', g('op'));
+    if (P.x || P.y || P.r || P.sx || P.sy) el.setAttribute('transform', `translate(${b[0] + (g('x') || 0)} ${b[1] + (g('y') || 0)}) rotate(${g('r') || 0}) scale(${P.sx ? g('sx') : 1} ${P.sy ? g('sy') : 1})`); }
+  for (const [id, t0, t1] of POPS) { const el = document.getElementById(id); let s = .6, o = 0;
+    if (t >= t0 && t <= t1) { const a = Math.min(1, (t - t0) / .25), z = Math.min(1, (t1 - t) / .18); s = (.6 + .4 * ease.o(a)) * (.9 + .1 * z); o = Math.min(1, a * 2) * z; }
+    el.style.opacity = o; el.style.transform = `scale(${s})`; }
+  const m = Math.round(val(TR.mm.r, t) / 6), hh = Math.floor(m / 60) % 24, mm = m % 60;
+  document.getElementById('clk').textContent = String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
 }
-const POPS = [['b1', 330, 700, 1.35, 2.75], ['b2', 590, 1080, 3.75, 5.55], ['b3', 300, 740, 5.0, 5.95], ['b4', 680, 860, 9.35, 10.9]];
-// ------- timeline (segundos)
-const ARM_TYPE = -72, ARM_UP = -172;
-const a1 = [[0, ARM_TYPE]], a2 = [[0, ARM_TYPE + 6]];
-function typing(t0, t1, step, amp){ for (let t = t0, i = 0; t <= t1; t += step, i++) { a1.push([t, ARM_TYPE + (i % 2 ? amp : -amp), 'io']); a2.push([t, ARM_TYPE + 6 + (i % 2 ? -amp : amp), 'io']); } }
-typing(0.1, 1.2, .16, 6);
-a1.push([1.45, ARM_TYPE]); a2.push([1.45, ARM_TYPE + 6]);
-a1.push([2.8, ARM_TYPE]); a2.push([2.8, ARM_TYPE + 6]);
-a1.push([3.25, ARM_UP, 'o']); a2.push([3.25, ARM_UP + 8, 'o']);
-a1.push([4.55, ARM_UP]); a2.push([4.55, ARM_UP + 8]);           // congelado
-a1.push([5.3, -130]); a2.push([5.3, -124]);
-a1.push([5.8, ARM_TYPE]); a2.push([5.8, ARM_TYPE + 6]);
-typing(5.9, 8.3, .066, 11);                                      // digitando desesperado
-a1.push([8.55, -60]); a2.push([8.55, -54]);
-a1.push([9.0, -30]); a2.push([9.0, -24]);                        // braços caem
-a1.push([9.9, -30]); a1.push([10.25, -175, 'o']);                 // bandeira
-for (let t = 10.45, i = 0; t < 11.6; t += .22, i++) a1.push([t, -175 + (i % 2 ? 12 : -12)]);
-a2.push([11.6, -24]);
+// ---------- linha do tempo (s)
+const TY = -72, UP = -172, a1 = [[0, TY]], a2 = [[0, TY + 6]];
+function typing(t0, t1, st, amp){ for (let t = t0, i = 0; t <= t1; t += st, i++) { a1.push([t, TY + (i % 2 ? amp : -amp)]); a2.push([t, TY + 6 + (i % 2 ? -amp : amp)]); } }
+typing(.1, 1.3, .16, 6); a1.push([1.5, TY]); a2.push([1.5, TY + 6]);
+a1.push([3.5, TY]); a2.push([3.5, TY + 6]); a1.push([3.95, UP, 'o']); a2.push([3.95, UP + 8, 'o']);
+a1.push([5.6, UP]); a2.push([5.6, UP + 8]); a1.push([6.4, -130]); a2.push([6.4, -124]); a1.push([6.9, TY]); a2.push([6.9, TY + 6]);
+typing(7.7, 10.1, .066, 11); a1.push([10.35, -60]); a2.push([10.35, -54]); a1.push([10.8, -30]); a2.push([10.8, -24]);
+a1.push([11.9, -30]); a1.push([12.25, -175, 'o']); for (let t = 12.45, i = 0; t < 14; t += .22, i++) a1.push([t, -175 + (i % 2 ? 12 : -12)]); a2.push([14, -24]);
 k('Aarm1', 'r', a1); k('Aarm2', 'r', a2);
-k('Ahead', 'r', [[0, 4], [1.2, 4], [1.5, -22], [2.6, -22], [2.85, 0], [3.25, -10, 'o'], [4.55, -10], [5.1, 22], [5.8, 10], [8.3, 12], [8.55, 14], [9.0, 48, 'o'], [11.6, 48]]);
-k('Ahead', 'x', [[0, 0], [8.55, 0], [9.0, 30], [11.6, 30]]);
-k('Abody', 'sx', [[0, 1], [2.8, 1], [3.25, .93, 'o'], [4.55, .93], [5.4, 1], [8.55, 1], [9.0, 1.1, 'o'], [11.6, 1.1]]);
-k('Abody', 'sy', [[0, 1], [1.2, 1], [1.5, 1.02], [2.8, 1.02], [3.25, 1.09, 'o'], [4.55, 1.09], [5.4, 1], [8.55, 1], [9.0, .86, 'o'], [11.6, .86]]);
-k('Abody', 'r', [[0, 0], [8.55, 0], [9.0, 16], [11.6, 16]]);
-// respiração / balanço digitando
-const by = [[0, 0]]; for (let t = .2, i = 0; t < 1.2; t += .32, i++) by.push([t, i % 2 ? -4 : 0]);
-by.push([5.9, 0]); for (let t = 5.95, i = 0; t < 8.3; t += .066, i++) by.push([t, i % 2 ? -7 : 0]); by.push([8.4, 0]);
-k('Abody', 'y', by);
-// celular vibra
-const px = [[0, 0]], vib = [[0, 0]], pg = [[0, 0]], ps = [[0, '#3A4047']];
-function buzz(t0, t1){ px.push([t0 - .01, 0]); vib.push([t0 - .01, 0]); pg.push([t0 - .01, 0]); ps.push([t0 - .01, '#3A4047']);
+k('Ahead', 'r', [[0, 4], [1.3, 4], [1.6, -22], [3.3, -22], [3.55, 0], [3.95, -10, 'o'], [5.6, -10], [6.3, 22], [6.9, 10], [10.1, 12], [10.35, 14], [10.8, 48, 'o'], [14, 48]]);
+k('Ahead', 'x', [[0, 0], [10.35, 0], [10.8, 30], [14, 30]]);
+k('Abody', 'sx', [[0, 1], [3.5, 1], [3.95, .93, 'o'], [5.6, .93], [6.5, 1], [10.35, 1], [10.8, 1.1, 'o'], [14, 1.1]]);
+k('Abody', 'sy', [[0, 1], [1.3, 1], [1.6, 1.02], [3.5, 1.02], [3.95, 1.09, 'o'], [5.6, 1.09], [6.5, 1], [10.35, 1], [10.8, .86, 'o'], [14, .86]]);
+k('Abody', 'r', [[0, 0], [10.35, 0], [10.8, 16], [14, 16]]);
+const by = [[0, 0]]; for (let t = .2, i = 0; t < 1.3; t += .32, i++) by.push([t, i % 2 ? -4 : 0]); by.push([7.7, 0]);
+for (let t = 7.75, i = 0; t < 10.1; t += .066, i++) by.push([t, i % 2 ? -7 : 0]); by.push([10.2, 0]); k('Abody', 'y', by);
+const px = [[0, 0]], vib = [[0, 0]], pg = [[0, 0]], ps = [[0, '#2A2A2F']];
+function buzz(t0, t1){ px.push([t0 - .01, 0]); vib.push([t0 - .01, 0]); pg.push([t0 - .01, 0]); ps.push([t0 - .01, '#2A2A2F']);
   for (let t = t0, i = 0; t <= t1; t += .045, i++) px.push([t, i % 2 ? 7 : -7, 'l']);
-  px.push([t1 + .05, 0]); vib.push([t0, 1, 'l'], [t1, 1], [t1 + .1, 0]); pg.push([t0, 1, 'l'], [t1 + .6, .5], [t1 + 1.2, 0]); ps.push([t0, '#7CF0C3', 'l'], [t1 + 1.2, '#7CF0C3'], [t1 + 1.4, '#3A4047']); }
-buzz(3.5, 4.4); buzz(9.15, 9.9);
+  px.push([t1 + .05, 0]); vib.push([t0, 1, 'l'], [t1, 1], [t1 + .1, 0]); pg.push([t0, 1, 'l'], [t1 + .6, .5], [t1 + 1.2, 0]); ps.push([t0, '#34D399', 'l'], [t1 + 1.2, '#34D399'], [t1 + 1.4, '#2A2A2F']); }
+buzz(4.1, 5.0); buzz(10.9, 11.6);
 k('phone', 'x', px); k('vib', 'op', vib); k('pglow', 'op', pg); k('pscr', 'fill', ps);
-// relógio: 17h55 -> 21h40 durante o timelapse
 const m0 = 17 * 60 + 55, m1 = 21 * 60 + 40;
-k('mm', 'r', [[0, m0 * 6], [5.9, m0 * 6], [8.3, m1 * 6, 'io']]);
-k('hh', 'r', [[0, m0 * .5], [5.9, m0 * .5], [8.3, m1 * .5, 'io']]);
-// anoitecer
-k('sky', 'fill', [[0, '#CFE6F7'], [5.9, '#CFE6F7'], [7.2, '#F2B58A'], [8.3, '#162447']]);
-k('sun', 'op', [[0, 1], [5.9, 1], [7.4, 0]]); k('stars', 'op', [[0, 0], [7.6, 0], [8.3, 1]]); k('lights', 'op', [[0, 0], [7.4, 0], [8.2, 1]]);
-k('city', 'fill', [[0, '#7E93A6'], [5.9, '#7E93A6'], [8.3, '#0D1428']]);
-k('night', 'op', [[0, 0], [5.9, 0], [8.3, .36]]);
-k('mglow2', 'op', [[0, 0], [6.2, 0], [8.3, .9]]); k('mglow', 'op', [[0, .15], [5.9, .15], [8.3, .5]]);
-k('speed', 'op', [[0, 0], [5.95, 0], [6.05, 1], [8.25, 1], [8.35, 0]]);
-k('flag', 'op', [[0, 0], [9.95, 0], [10.05, 1], [11.6, 1]]);
-const cl = [[0, 0]]; for (let t = 10.1, i = 0; t < 11.6; t += .18, i++) cl.push([t, i % 2 ? 1.08 : .94]);
-k('cloth', 'sy', cl);
-window.__t = ms => apply(ms / 1000);
-apply(0);
+k('mm', 'r', [[0, m0 * 6], [7.7, m0 * 6], [10.1, m1 * 6]]); k('hh', 'r', [[0, m0 * .5], [7.7, m0 * .5], [10.1, m1 * .5]]);
+k('sky', 'fill', [[0, '#5E7F9C'], [7.7, '#5E7F9C'], [9.0, '#B07A5A'], [10.1, '#0E1830']]);
+k('sun', 'op', [[0, 1], [7.7, 1], [9.2, 0]]); k('stars', 'op', [[0, 0], [9.4, 0], [10.1, 1]]); k('lights', 'op', [[0, 0], [9.2, 0], [10.0, 1]]);
+k('city', 'fill', [[0, '#3E556B'], [7.7, '#3E556B'], [10.1, '#0A0F1C']]);
+k('night', 'op', [[0, 0], [7.7, 0], [10.1, .22]]); k('mglow2', 'op', [[0, 0], [8.0, 0], [10.1, .8]]); k('mglow', 'op', [[0, .25], [7.7, .25], [10.1, .6]]);
+k('speed', 'op', [[0, 0], [7.75, 0], [7.85, 1], [10.05, 1], [10.15, 0]]);
+k('flag', 'op', [[0, 0], [11.85, 0], [11.95, 1], [14, 1]]);
+const cl = [[0, 1]]; for (let t = 12.0, i = 0; t < 14; t += .18, i++) cl.push([t, i % 2 ? 1.08 : .94]); k('cloth', 'sy', cl);
+window.__t = ms => apply(ms / 1000); apply(0);
 </script></body></html>"""
-out = sys.argv[1] if len(sys.argv) > 1 else '/tmp/ep01.html'
+out = sys.argv[1] if len(sys.argv) > 1 else '/tmp/ep01b.html'
 open(out, 'w').write(HTML); print(out, DUR)

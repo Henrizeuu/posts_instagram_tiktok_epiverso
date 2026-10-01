@@ -1,19 +1,26 @@
 # Série "Escritório sem falas"
 
 Animações curtas (8–15 s) num escritório contábil, com bonecos sem rosto e sem fala.
-Quem conta a piada é o corpo (espreguiçar, murchar, congelar), os balões e o **contabilês**,
-a língua inventada dos bonecos: glifos no balão + sons de sílabas que não querem dizer nada.
-Como não tem idioma, funciona para qualquer pessoa, sem legenda, e não depende de voz gravada.
+Quem conta a piada é o corpo (espreguiçar, murchar, congelar) e os **balões, com texto curto que dá para ler**.
+O som é o **contabilês**: sílabas inventadas, como nos jogos tipo The Sims. Ninguém fala de verdade, então não
+depende de voz gravada nem de sotaque.
+
+## Visual (o mesmo dos posts)
+- Fundo preto #0A0A0A com a grade e o brilho verde no canto, logo no topo.
+- Kicker em JetBrains Mono ("ESCRITÓRIO SEM FALAS · EP. 01") e título em Inter 800 com a palavra-chave em verde.
+- Relógio digital "HORA" em verde à direita do título.
+- A cena fica dentro de um card escuro (#121214) com borda fina, como os cards dos carrosséis.
+- Rodapé "PAINEL FISCAL · EPIVERSO". A faixa de baixo fica livre para a legenda do app.
 
 ## Personagens (sempre os mesmos, para o público reconhecer)
 - **O Fiscal**: branco, macio, com headset verde Epiverso. Não tem rosto; o microfone mostra para onde ele olha.
 - Próximos: **o Sócio** (gravata cinza), **a Estagiária** (crachá verde) e **o Cliente**, que só aparece
   pelo celular (balão escuro). Mais adiante, o **robô do Painel**: um mini-robô verde que aparece à meia-noite.
 
-## Regras do contabilês
-- Balão claro = pessoa do escritório. Balão escuro = cliente (no celular).
-- Dentro do balão: 2 a 3 "palavras" em glifos + 1 ou 2 símbolos que todo contador entende (⏱️ 1', 🏠, 📎, 🧾, 🙏, DAS).
-- Cada personagem tem um tom de voz: o Fiscal é médio e fofo; o cliente é agudo, com som de telefone.
+## Regras dos balões
+- Balão claro = alguém do escritório. Balão escuro com borda verde e etiqueta "CLIENTE · HORA" = cliente.
+- No máximo 2 linhas e uns 6 palavras. Cada balão fica pelo menos 2 s na tela, para dar tempo de ler.
+- No som, cada personagem tem um tom: o Fiscal é médio e fofo, o cliente é agudo e com som de telefone.
 
 ## Próximos episódios (ideias)
 1. **Dia 19, 17h**: as notificações não param e o Fiscal vira um polvo com 8 braços digitando.
