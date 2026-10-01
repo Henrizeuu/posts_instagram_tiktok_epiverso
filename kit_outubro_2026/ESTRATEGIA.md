@@ -28,14 +28,13 @@ exploram isso. **Postar IG 01 e TT 03 nesta semana**: o "mudou hoje" perde forç
 
 | Data | Instagram | TikTok |
 |---|---|---|
-| Qua 01/10 | 12h · **01 Reels "A NFS-e mudou hoje"** · 18h · **02 Carrossel "Faltam 92 dias"** | 12h · **03 Explicativo NFS-e** |
-| Qui 02/10 | | 19h · **01 POV dia 19** |
-| Sex 03/10 | 12h · **03 Carrossel "Um dia no escritório"** | |
-| Sáb 04/10 | | 11h · **02 Carrossel "coisas que só contador entende"** |
-| Seg 06/10 | 08h · **04 Estático "Contador não é baixador de XML"** | |
-| Ter 07/10 | | 20h · **04 Eu em 2025 vs 2026** |
-| Qui 09/10 | | 12h · **05 Respondendo comentário** |
-| Sex 10/10 | 17h50 · **05 Reels POV "sexta, 17h58"** | |
+| Qui 01/10 (hoje) | 12h · **01 Reels "A NFS-e mudou hoje"** · 18h · **02 Carrossel "Faltam 92 dias"** | 12h · **03 Explicativo NFS-e** |
+| Sex 02/10 | 12h · **03 Carrossel "Um dia no escritório"** | 19h · **01 POV dia 19** |
+| Sáb 03/10 | | 11h · **02 Carrossel "coisas que só contador entende"** |
+| Seg 05/10 | 08h · **04 Estático "Contador não é baixador de XML"** | |
+| Ter 06/10 | | 20h · **04 Eu em 2025 vs 2026** |
+| Qui 08/10 | | 12h · **05 Respondendo comentário** |
+| Sex 09/10 | 17h50 · **05 Reels POV "sexta, 17h58"** | |
 
 Na primeira hora de cada post: responda todos os comentários. No Instagram, reposte nos stories com
 enquete. No TikTok, fixe um comentário seu explicando o sistema.
