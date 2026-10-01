@@ -13,6 +13,21 @@ depende de voz gravada nem de sotaque.
 - Rodapé "PAINEL FISCAL · EPIVERSO". A faixa de baixo fica livre para a legenda do app.
 
 ## Personagens (sempre os mesmos, para o público reconhecer)
+- **O Fiscal**: branco, cabeça grande, com pernas e mãozinhas e headset verde. O microfone mostra para onde ele olha.
+- **O Sócio**: maior, de colete escuro e gravata verde. Entra com brilho e resolve.
+- **O Cliente**: cor creme e boné laranja (a única cor fora da paleta, para destacar quem é de fora).
+- Sem rosto, as reações aparecem com **símbolos de mangá**: veia vermelha (raiva), gota azul (nervoso),
+  brilhos verdes (alegria), "!" e "?" verdes (susto e dúvida), fumaça (ódio) e nuvem com riscos (desânimo).
+- Mais adiante: **a Estagiária** e o **robô do Painel** (mini-robô verde que aparece à meia-noite).
+
+## Visual (o mesmo dos posts)
+- Fundo preto #0A0A0A com a grade e o brilho verde no canto, logo no topo.
+- Kicker em JetBrains Mono ("ESCRITÓRIO SEM FALAS · EP. 01") e título em Inter 800 com a palavra-chave em verde.
+- Relógio digital "HORA" em verde à direita do título.
+- A cena fica dentro de um card escuro (#121214) com borda fina, como os cards dos carrosséis.
+- Rodapé "PAINEL FISCAL · EPIVERSO". A faixa de baixo fica livre para a legenda do app.
+
+## Personagens (sempre os mesmos, para o público reconhecer)
 - **O Fiscal**: branco, macio, com headset verde Epiverso. Não tem rosto; o microfone mostra para onde ele olha.
 - Próximos: **o Sócio** (gravata cinza), **a Estagiária** (crachá verde) e **o Cliente**, que só aparece
   pelo celular (balão escuro). Mais adiante, o **robô do Painel**: um mini-robô verde que aparece à meia-noite.
