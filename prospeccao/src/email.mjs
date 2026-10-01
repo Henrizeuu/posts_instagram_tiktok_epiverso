@@ -49,10 +49,34 @@ export function filaEmail(cfg = db.config) {
   return fila;
 }
 
+const ehGoogle = cfg => /gmail|google/i.test(cfg.smtpHost || '');
+/** O Google mostra a senha de app como "abcd efgh ijkl mnop": os espaços (às vezes invisíveis) fazem o login falhar. */
+export const senhaDe = cfg => ehGoogle(cfg) ? String(cfg.smtpSenha || '').replace(/[\s\u00a0\u200b]/g, '') : String(cfg.smtpSenha || '').replace(/[\u00a0\u200b]/g, '').trim();
+
 const transporte = cfg => nodemailer.createTransport({
   host: cfg.smtpHost, port: Number(cfg.smtpPorta), secure: Number(cfg.smtpPorta) === 465,
-  auth: { user: cfg.smtpUsuario || cfg.emEmail, pass: cfg.smtpSenha }, connectionTimeout: 30000, greetingTimeout: 30000
+  auth: { user: (cfg.smtpUsuario || cfg.emEmail).trim(), pass: senhaDe(cfg) }, connectionTimeout: 30000, greetingTimeout: 30000
 });
+
+/** Traduz os erros do servidor de e-mail para o que fazer. */
+export function explicarErroEmail(e, cfg = db.config) {
+  const txt = `${e.response || ''} ${e.message || ''}`;
+  if (e.code === 'EAUTH' || /\b535\b|BadCredentials|authentication failed|Username and Password not accepted/i.test(txt)) {
+    if (ehGoogle(cfg)) {
+      return 'O Gmail recusou a senha. Ele não aceita a senha normal da conta aqui: precisa de uma SENHA DE APP. ' +
+        '1) Ative a verificação em 2 etapas em myaccount.google.com/security. ' +
+        '2) Crie a senha de app em myaccount.google.com/apppasswords (nome: Epiverso). ' +
+        '3) Cole as 16 letras no campo Senha, salve e teste de novo. ' +
+        (senhaDe(cfg).length !== 16 ? `(A senha salva tem ${senhaDe(cfg).length} caracteres; a senha de app tem 16.)` : 'Se já é senha de app, confira se o e-mail remetente é a mesma conta onde ela foi criada.');
+    }
+    return 'O servidor recusou usuário ou senha. Confira o e-mail, a senha (alguns provedores exigem "senha de app") e se o SMTP está liberado na sua conta.';
+  }
+  if (/ETIMEDOUT|ECONNECTION|ECONNREFUSED|ENOTFOUND|ESOCKET/.test(e.code || '') || /timeout|getaddrinfo/i.test(txt)) {
+    return `Não consegui conectar em ${cfg.smtpHost}:${cfg.smtpPorta}. Confira o servidor, a porta (587 ou 465) e a internet; antivírus/firewall às vezes bloqueiam.`;
+  }
+  if (/\b5\.4\.5\b|daily|limit exceeded|quota/i.test(txt)) return 'O provedor bloqueou por limite de envio diário. Espere até amanhã e diminua o limite em Configurações.';
+  return 'Erro do servidor de e-mail: ' + (e.message || String(e));
+}
 
 function montar(lead, etapa, cfg) {
   const angulo = lead.angulo || (lead.angulo = lead.dor || sortear(ANGULOS));
@@ -85,7 +109,7 @@ async function enviarUm({ lead, etapa }, cfg) {
   } catch (e) {
     if (e.code === 'EAUTH') {
       cfg.emLigado = false; salvar.config();
-      return registrar('erro', '✉️ O servidor de e-mail recusou usuário/senha. Envios de e-mail pausados: confira a senha de app em Configurações.');
+      return registrar('erro', '✉️ Envios de e-mail pausados. ' + explicarErroEmail(e, cfg));
     }
     if (e.code === 'EENVELOPE' && e.rejected?.length) {
       lead.em.estado = 'devolvido'; salvar.leads();
@@ -125,7 +149,7 @@ export async function verificarRespostas(somente) {
     ...alvos.map(l => `SINCE ${dataImap(l.em.primeiroEnvio)} FROM ${q(l.email)} ${semAuto}`),
     ...alvos.map(l => `SINCE ${dataImap(l.em.primeiroEnvio)} OR FROM "mailer-daemon" FROM "postmaster" BODY ${q(l.email)}`)
   ];
-  const res = await imapBuscar({ host: cfg.imapHost, porta: Number(cfg.imapPorta), usuario: cfg.smtpUsuario || cfg.emEmail, senha: cfg.smtpSenha }, buscas);
+  const res = await imapBuscar({ host: cfg.imapHost, porta: Number(cfg.imapPorta), usuario: (cfg.smtpUsuario || cfg.emEmail).trim(), senha: senhaDe(cfg) }, buscas);
   let respostas = 0, devolvidos = 0;
   alvos.forEach((l, i) => {
     if (res[i]?.length) { respostas++; marcarResposta(l, 'email', '(respondeu por e-mail: leia na sua caixa de entrada)'); }
@@ -142,7 +166,8 @@ export async function enviarTeste(para) {
   if (falta.length) throw new Error('Falta configurar: ' + falta.join(', '));
   const lead = { nome: 'Marcos Silva', escritorio: 'Contabilidade Exemplo', cidade: 'Joinville', email: para, em: {} };
   const r = montar(lead, 0, cfg);
-  await enviar(cfg, para, r.assunto, r.corpo);
+  try { await enviar(cfg, para, r.assunto, r.corpo); }
+  catch (e) { throw new Error(explicarErroEmail(e, cfg)); }
   registrar('email', `✉️ E-mail de teste enviado para ${para}`);
   return r.assunto;
 }

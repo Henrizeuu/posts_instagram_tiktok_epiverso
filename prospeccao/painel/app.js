@@ -534,7 +534,7 @@ const GRUPOS = [
     ['waFollowup', 'Fazer 1 follow-up para quem não respondeu', 'check'], ['waDiasFollowup', 'Follow-up depois de (dias úteis)', 'numero']]],
   ['✉️ E-mail', [['emNome', 'Nome do remetente', 'texto', 'Vazio = seu nome.'], ['emEmail', 'E-mail remetente', 'texto', 'Use um domínio separado para prospecção (veja Como usar).'],
     ['smtpHost', 'Servidor SMTP', 'texto'], ['smtpPorta', 'Porta SMTP', 'numero', '587 ou 465.'], ['smtpUsuario', 'Usuário SMTP', 'texto', 'Vazio = o e-mail remetente.'],
-    ['smtpSenha', 'Senha (no Gmail: senha de app)', 'senha'], ['imapAtivo', 'Ler a caixa de entrada para parar quem respondeu (IMAP)', 'check'],
+    ['smtpSenha', 'Senha (no Gmail: senha de app)', 'senha', 'Gmail: crie em <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a> (precisa da verificação em 2 etapas ligada). São 16 letras.'], ['imapAtivo', 'Ler a caixa de entrada para parar quem respondeu (IMAP)', 'check'],
     ['imapHost', 'Servidor IMAP', 'texto'], ['imapPorta', 'Porta IMAP', 'numero'], ['emLimiteMax', 'Limite diário depois do aquecimento', 'numero', 'Recomendado: 40 por caixa.'],
     ['emInicioAquecimento', 'Início do aquecimento', 'data', 'Vazio = começa no primeiro envio.'], ['emIntervaloMin', 'Intervalo mínimo (segundos)', 'numero'],
     ['emIntervaloMax', 'Intervalo máximo (segundos)', 'numero'], ['emDiasEtapa2', '2º e-mail depois de (dias úteis)', 'numero'], ['emDiasEtapa3', '3º e-mail depois de (dias úteis)', 'numero']]]
@@ -552,7 +552,8 @@ async function renderConfig() {
       ${titulo.includes('E-mail') ? `<div class="linha" style="margin:4px 0 2px"><span class="suave peq">Provedor:</span>${Object.keys(PRESETS).map(p => `<button class="b mini" data-preset="${p}">${p}</button>`).join('')}</div>` : ''}
       <div class="form">${campos.map(campo).join('')}</div>
       ${titulo.includes('E-mail') ? `<h3>Testar</h3><div class="linha"><input id="para-teste" placeholder="seu-email@gmail.com ou o endereço do mail-tester.com" style="max-width:360px"><button class="b mini" id="teste-email">Enviar e-mail de teste</button></div>
-        <p class="ajuda">Salve antes de testar. Use o <a href="https://www.mail-tester.com" target="_blank" rel="noopener">mail-tester.com</a> e só comece com nota 9/10 ou mais.</p>` : ''}</div>`).join('')
+        <div id="resultado-teste"></div>
+        <p class="ajuda">O teste salva as configurações antes. Use o <a href="https://www.mail-tester.com" target="_blank" rel="noopener">mail-tester.com</a> e só comece com nota 9/10 ou mais.</p>` : ''}</div>`).join('')
     + '<div class="barra-salvar"><button class="b prim grande" id="salvar-cfg">Salvar configurações</button></div>';
 }
 $('#aba-config').addEventListener('click', async e => {
@@ -565,7 +566,17 @@ $('#aba-config').addEventListener('click', async e => {
   }
   if (t.id === 'teste-email') {
     const para = $('#para-teste').value.trim(); if (!para) return toast('Digite para onde mandar o teste.', true);
-    t.disabled = true; await acao(() => api('POST', '/api/email/teste', { para }), r => `Enviado! Assunto: "${r.assunto}"`); t.disabled = false;
+    t.disabled = true; t.textContent = 'Enviando…';
+    const caixa = $('#resultado-teste');
+    try {
+      const novo = Object.fromEntries($$('[data-cfg]').map(i => [i.dataset.cfg, i.type === 'checkbox' ? i.checked : i.value]));
+      CFG = await api('PUT', '/api/config', novo);
+      const r = await api('POST', '/api/email/teste', { para });
+      caixa.innerHTML = `<div class="aviso ok">✓ Enviado para ${esc(para)} com o assunto "${esc(r.assunto)}". Confira se chegou na caixa de entrada (não em Spam/Promoções).</div>`;
+    } catch (err) {
+      caixa.innerHTML = `<div class="aviso ruim">${esc(err.message).replace(/(\d\)) /g, '<br>$1 ')}</div>`;
+    }
+    t.disabled = false; t.textContent = 'Enviar e-mail de teste';
   }
 });
 

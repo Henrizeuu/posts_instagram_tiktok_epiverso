@@ -61,7 +61,7 @@ net.createServer(c => {
       const l = buf.slice(0, i); buf = buf.slice(i + 2); const u = l.toUpperCase();
       if (login) { c.write(login++ === 1 ? '334 UGFzc3dvcmQ6\r\n' : '235 ok\r\n'); if (login > 2) login = 0; continue; }
       if (u.startsWith('EHLO')) c.write('250-teste\r\n250-AUTH PLAIN LOGIN\r\n250 8BITMIME\r\n');
-      else if (u.startsWith('AUTH PLAIN')) c.write('235 ok\r\n');
+      else if (u.startsWith('AUTH PLAIN')) c.write(Buffer.from(l.slice(11), 'base64').toString().endsWith('errada') ? '535-5.7.8 Username and Password not accepted. BadCredentials\r\n535 5.7.8 gsmtp\r\n' : '235 ok\r\n');
       else if (u.startsWith('AUTH LOGIN')) { login = 1; c.write('334 VXNlcm5hbWU6\r\n'); }
       else if (u.startsWith('RCPT')) c.write(/recusa/i.test(l) ? '550 5.1.1 usuario inexistente\r\n' : '250 ok\r\n');
       else if (u.startsWith('DATA')) { dados = true; c.write('354 manda\r\n'); }
@@ -103,6 +103,18 @@ await etapa('configurações salvas (e a senha nunca volta para o painel)', asyn
   assert.equal(c.seuNome, 'Ana'); assert.equal(c.temSenha, true); assert.equal(c.smtpSenha, undefined); assert.equal(c.horaFim, 18);
   await api('PUT', '/api/config', { smtpSenha: '' });
   assert.equal(D.db.config.smtpSenha, 'segredo', 'senha vazia deve manter a salva');
+});
+
+await etapa('senha recusada vira explicação em português; espaços da senha de app são removidos', async () => {
+  const EM = await import('../src/email.mjs');
+  assert.equal(EM.senhaDe({ smtpHost: 'smtp.gmail.com', smtpSenha: ' abcd efgh\u00a0ijkl mnop ' }), 'abcdefghijklmnop');
+  assert.equal(EM.senhaDe({ smtpHost: 'smtp.zoho.com', smtpSenha: ' minha senha ' }), 'minha senha');
+  const gmail = EM.explicarErroEmail({ code: 'EAUTH', response: '535-5.7.8 Username and Password not accepted' }, { smtpHost: 'smtp.gmail.com', smtpSenha: 'SenhaNormal123' });
+  assert.match(gmail, /SENHA DE APP/); assert.match(gmail, /apppasswords/); assert.match(gmail, /14 caracteres/);
+  await api('PUT', '/api/config', { smtpSenha: 'errada' });
+  await assert.rejects(api('POST', '/api/email/teste', { para: 'eu@teste.com.br' }), /recusou usuário ou senha/);
+  await api('PUT', '/api/config', { smtpSenha: 'segredo' });
+  await api('POST', '/api/email/teste', { para: 'eu@teste.com.br' });
 });
 
 await etapa('importa planilha: válidos, repetidos e inválidos', async () => {
